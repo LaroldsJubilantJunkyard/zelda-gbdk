@@ -1,0 +1,11 @@
+.vscode/ 
+/bin/ 
+/dist/ 
+/headers/gen/
+/source/gen/
+
+*.asm
+*.lst
+*.noi
+*.o
+*.sym
