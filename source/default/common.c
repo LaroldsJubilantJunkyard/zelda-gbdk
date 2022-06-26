@@ -1,35 +1,35 @@
 #include <gb/gb.h>
 #include <gb/metasprites.h>
-uint8_t joypadCurrent,joypadPrevious,blinkDamaged;
+#include "objects.h"
+#include "camera.h"
+
+uint8_t joypadCurrent=0,joypadPrevious=0;
 
 
-void move_metasprite_props(const metasprite_t* current, uint8_t base_tile, uint8_t base_sprite, uint8_t x, uint8_t y,uint8_t props) {
-    metasprite_t temp[4];
 
-    if(props==0){
-        move_metasprite(current,base_tile,base_sprite,x,y);
-        return;
 
-    }
+const int8_t J_DIRECTIONS[9][2]={
+    {0,0},
+    {1,0},
+    {-1,0},
+    {0,0},
+    {0,-1},
+    {0,0},
+    {0,0},
+    {0,0},
+    {0,1}
+};
 
-    for(uint8_t i=0;i<4;i++){
+uint8_t move_metasprite_with_camera2(const metasprite_t * metasprite, uint8_t base_tile, uint8_t base_sprite, uint16_t x, uint16_t y) {
+
     
-        // Retain sprite position, and tile
-        temp[i].dy=current->dy;
-        temp[i].dx=current->dx;
-        temp[i].dtile=current->dtile;
-        temp[i].props=current->props;
+    return move_metasprite(metasprite,base_tile,base_sprite,8+((x-cameraX)>>4),16+((y-cameraY)>>4));
+}
 
-        // If we should blink for damage
-        // Change the properties, but retain the flip
-        if(blinkDamaged){
-            temp[i].props= props | (current->props & 128 ) | (current->props & 64);
-        }
-        current++;
-    }
+uint8_t move_metasprite_with_camera(Object* object,uint8_t sprite) {
 
-    const metasprite_t *tempPtr=temp;
-
-    // hide or show the metasprites
-    move_metasprite(tempPtr,base_tile,base_sprite,x,y);
+    // If we are blinking
+    if((object->damageX!=0||object->damageY!=0)&&(universalBlinker>>4)==0)return 0;
+    
+    return move_metasprite(object->currentMetasprite,object->type->startTile,sprite,8+((object->x-cameraX)>>4),16+((object->y-cameraY)>>4));
 }

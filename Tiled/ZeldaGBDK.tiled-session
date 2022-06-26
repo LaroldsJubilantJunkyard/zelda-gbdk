@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Tilesets/Moblin-Tileset.tsx",
+    "activeFile": "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Levels/level1.tmx",
     "expandedProjectPaths": [
         "Levels",
+        "Tilesets",
         "Templates",
-        ".",
-        "Tilesets"
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -72,6 +72,28 @@
             "scaleInDock": 3,
             "scaleInEditor": 1
         },
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Levels/level1.tmx": {
+            "scale": 1.1103124999999998,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 160.31522656909652,
+                "y": 145.00422178440755
+            }
+        },
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Levels/level2.tmx": {
+            "scale": 1.1103124999999998,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 483.6476217281172,
+                "y": 278.3000281452295
+            }
+        },
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Tilesets/Map-Tileset.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Tilesets/Moblin-Tileset.tsx": {
+            "scaleInDock": 1
+        },
         "Levels/Map-Source.tsx": {
             "scaleInDock": 1
         },
@@ -82,8 +104,16 @@
             "scale": 5.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 126.54545454545455,
-                "y": 189.45454545454544
+                "x": 225.2727272727273,
+                "y": 170.9090909090909
+            }
+        },
+        "Levels/level2.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 225.2727272727273,
+                "y": 182
             }
         },
         "Map-Source.tsx": {
@@ -116,33 +146,38 @@
             }
         }
     },
+    "last.exportedFilePath": "D:/Business/LaroldsJubilantJunkyard/game-remakes/zelda/Tiled/Levels",
     "last.externalTilesetPath": "D:/Business/LaroldsJubilantJunkyard/game-remakes/zelda/Tiled/Tilesets",
     "last.imagePath": "D:/Business/LaroldsJubilantJunkyard/game-remakes/zelda/graphics",
     "last.objectTemplatePath": "D:/Business/LaroldsJubilantJunkyard/game-remakes/zelda/Tiled",
     "map.height": 140,
+    "map.lastUsedExportFilter": "GBDK Level Export (*.c)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 8,
     "map.tileWidth": 8,
     "map.width": 20,
     "openFiles": [
-        "Levels/level1.tmx",
+        "Levels/level2.tmx",
         "Tilesets/Moblin-Tileset.tsx",
-        "Tilesets/Map-Tileset.tsx"
+        "Tilesets/Map-Tileset.tsx",
+        "Levels/level1.tmx",
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Levels/level1.tmx",
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Levels/level2.tmx"
     ],
     "project": "ZeldaGBDK.tiled-project",
     "recentFiles": [
-        "Levels/level1.tmx",
-        "Tilesets/Map-Tileset.tsx",
+        "Levels/level2.tmx",
         "Tilesets/Moblin-Tileset.tsx",
+        "Tilesets/Map-Tileset.tsx",
+        "Levels/level1.tmx",
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Levels/level2.tmx",
+        "D:/Business/LaroldsJubilantJunkyard/game-remakes/mario-new/Tiled/Levels/level1.tmx",
         "Moblin.tsx",
         "Map-Source.tsx",
         "level1.tmx",
         "C:/Program Files (x86)/Tiled/untitled.tmx",
         "C:/gbdk/projects/project2/graphics/levels/level1.tmx",
-        "C:/gbdk/projects/project2/graphics/levels/tileset1.tsx",
-        "C:/gbdk/projects/project2/graphics/levels/paths.tsx",
-        "C:/gbdk/projects/project2/graphics/levels/line.tsx",
-        "C:/gbdk/projects/project2/graphics/paths.tsx"
+        "C:/gbdk/projects/project2/graphics/levels/tileset1.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

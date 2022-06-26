@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="40" height="36" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="9">
  <editorsettings>
-  <export target="level1.c" format="gbdk-export"/>
+  <export target="level2.c" format="gbdk-export"/>
  </editorsettings>
  <properties>
   <property name="gbdkObjectType" value="ObjectSpawn"/>
@@ -51,22 +51,22 @@
 </data>
  </layer>
  <objectgroup id="2" name="objects">
-  <object id="5" name="Moblin" gid="81" x="48.1994" y="175.716" width="16" height="16">
+  <object id="5" name="Moblin" gid="81" x="140.381" y="232.08" width="16" height="16">
    <properties>
     <property name="gbdk_type" value="enemy"/>
    </properties>
   </object>
-  <object id="6" name="Moblin" gid="81" x="71.989" y="159.712" width="16" height="16">
+  <object id="6" name="Moblin" gid="81" x="186.534" y="206.803" width="16" height="16">
    <properties>
     <property name="gbdk_type" value="enemy"/>
    </properties>
   </object>
-  <object id="7" name="Moblin" gid="81" x="96.2027" y="176.49" width="16" height="16">
+  <object id="7" name="Moblin" gid="81" x="177.294" y="172.308" width="16" height="16">
    <properties>
     <property name="gbdk_type" value="enemy"/>
    </properties>
   </object>
-  <object id="8" name="Moblin" gid="81" x="71.9424" y="191.856" width="16" height="16">
+  <object id="8" name="Moblin" gid="81" x="99.2151" y="229.492" width="16" height="16">
    <properties>
     <property name="gbdk_type" value="enemy"/>
    </properties>

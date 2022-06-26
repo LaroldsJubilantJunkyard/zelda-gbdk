@@ -11,7 +11,7 @@ mkdir dist
 
 SET GBDK_HOME=C:/gbdk
 
-SET LCC_COMPILE_BASE=%GBDK_HOME%\bin\lcc -Iheaders/main -Iheaders/gen -Wa-l -Wl-m -Wl-j -DUSE_SFR_FOR_REG
+SET LCC_COMPILE_BASE=%GBDK_HOME%\bin\lcc -debug -Iheaders/main -Iheaders/gen -Wa-l -Wl-m -Wl-j -DUSE_SFR_FOR_REG
 SET LCC_COMPILE=%LCC_COMPILE_BASE% -c -o 
 
 :: Required to concatenate the "COMPILE_OBJECT_FILES" via a for loop
@@ -19,7 +19,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 
 SET "COMPILE_OBJECT_FILES="
 
-call generate-graphics.bat
+
+::call generate-graphics.bat
 
 
 :: loop for all files in the default source folder
@@ -41,7 +42,7 @@ FOR /R "source/default/" %%X IN (*.c) DO (
 
 
 :: Compile a .gb file from the compiled .o files
-%LCC_COMPILE_BASE% -Wm-yC -Wl-yt3 -o dist/Zelda.gb !COMPILE_OBJECT_FILES!
+%LCC_COMPILE_BASE% -Wm-yC -Wl-yt3 -Wl-yo2 -o dist/Zelda.gb !COMPILE_OBJECT_FILES!
 
 endlocal
 
