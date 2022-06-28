@@ -16,6 +16,7 @@ typedef struct Object{
     uint8_t active;
     uint8_t direction;
     uint8_t recycle;
+    uint16_t originalArea;
     uint8_t health;
     uint16_t helper1;
     struct ObjectType *type;
@@ -54,6 +55,7 @@ void RecycleObject(Object* objectToBeRecycled, Object* previousObject);
 void UpdateAllObjects();
 uint8_t MoveToNextPosition(Object* object, uint16_t nextX, uint16_t nextY);
 uint8_t Damaged(Object* object,uint8_t sprite);
+uint8_t RemoveWhenOutOffscreen(Object* object);
 
 
 #define MOBLIN_OBJECT_TYPE &objectTypes[2]

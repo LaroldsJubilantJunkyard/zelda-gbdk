@@ -1,5 +1,6 @@
 #include <gb/gb.h>
 #include "common.h"
+#include "camera.h"
 #include "objects.h"
 #include "collision.h"
 #include "link.h"
@@ -25,13 +26,14 @@ void DamageLinkWhenClose(Object* object){
 void ReceiveDamageFromLinksSword(Object* object){
     
     if(object->health==0)return;
+    if(object->damageX!=0||object->damageY!=0)return;
 
     if(CheckCollisionAgainstLinksSword(object)){
 
         object->health--;
         
-        object->damageX = ((object->x>>4)-(linkSwordX>>4))*5;
-        object->damageY = ((object->y>>4)-(linkSwordY>>4))*5;
+        object->damageX = ((object->x>>4)-(link->x>>4))*2;
+        object->damageY = ((object->y>>4)-(link->y>>4))*2;
 
     }
 }
@@ -62,6 +64,7 @@ uint8_t UpdateDamagedEnemy(Object* object, uint8_t sprite){
 uint8_t UpdateMoblin(Object* object, uint8_t sprite){
 
     if(UpdateDamagedEnemy(object,sprite))return 0;
+    if(RemoveWhenOutOffscreen(object))return 0;
 
     uint8_t frame = 0;
     if(object->direction==J_UP)frame=2;
@@ -70,26 +73,17 @@ uint8_t UpdateMoblin(Object* object, uint8_t sprite){
 
     moveTimer+=5;
     if((moveTimer>>4)<20){
-        if(object->direction==J_DOWN){
-            if(!MoveToNextPosition(object,object->x,object->y+ENEMY_MOVE_SPEED)){
-                moveTimer=41<<4;
-            }
+
+        // Our next location
+        uint16_t nextX=object->x+((J_DIRECTIONS[object->direction][0]*ENEMY_MOVE_SPEED));
+        uint16_t nextY=object->y+((J_DIRECTIONS[object->direction][1]*ENEMY_MOVE_SPEED));
+
+        // If we cannot move in that direction
+        // Reset our timer by setting it's value really high
+        if(!MoveToNextPosition(object,nextX,nextY)){
+            moveTimer=41<<4;
         }
-        if(object->direction==J_UP){
-            if(!MoveToNextPosition(object,object->x,object->y-ENEMY_MOVE_SPEED)){
-                moveTimer=41<<4;
-            }
-        }
-        if(object->direction==J_LEFT){
-            if(!MoveToNextPosition(object,object->x-ENEMY_MOVE_SPEED,object->y)){
-                moveTimer=41<<4;
-            }
-        }
-        if(object->direction==J_RIGHT){
-            if(!MoveToNextPosition(object,object->x+ENEMY_MOVE_SPEED,object->y)){
-                moveTimer=41<<4;
-            }
-        }
+       
         frame+=universalBlinker>>4;
     }else if((moveTimer>>4)>25){
         moveTimer=0;

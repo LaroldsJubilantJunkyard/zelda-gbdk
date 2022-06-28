@@ -2,10 +2,11 @@
 #include "camera.h"
 #include "common.h"
 #include "objects.h"
+#include "graphics/HUD.h"
 #include "graphics/TileMap.h"
 uint8_t cameraScrollDirection=0;
 uint16_t cameraX,cameraY;
-uint16_t cameraSectionColumn,cameraSectionRow;
+uint16_t cameraSectionColumn,cameraSectionRow, cameraSection;
 uint16_t lastCameraX, lastCameraY;
 uint16_t lastCameraRow, lastCameraColumn;
 
@@ -18,6 +19,7 @@ void SetupCamera(){
     lastCameraRow=0;
     lastCameraX=0;
     lastCameraY=0;
+    cameraSection=0;
 
 }
 
@@ -26,8 +28,8 @@ void UpdateCameraSubMap(){
     // update hardware scroll position
     SCY_REG = cameraY>>4; SCX_REG = cameraX>>4; 
     
-    uint16_t cameraRow = (cameraY>>4)/8;
-    uint16_t cameraColumn=(cameraX>>4)/8;
+    uint16_t cameraRow = (cameraY>>7);
+    uint16_t cameraColumn=(cameraX>>7);
 
     // If our camera's column has changed
     if(lastCameraColumn!=cameraColumn){
@@ -36,10 +38,10 @@ void UpdateCameraSubMap(){
         lastCameraColumn=cameraColumn;
 
         if(cameraX>lastCameraX){
-            if ((TileMap_WIDTH/8 - 20u) > cameraColumn) set_bkg_submap(cameraColumn + 20u, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8);  
+            if ((TileMap_WIDTH/8 - 20u) > cameraColumn) set_bkg_based_submap(cameraColumn + 20u, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT);  
 
         }else{
-            set_bkg_submap(cameraColumn, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8);   
+            set_bkg_based_submap(cameraColumn, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT);   
 
         }
     }
@@ -51,11 +53,11 @@ void UpdateCameraSubMap(){
         lastCameraRow=cameraRow;
 
         if(cameraY>lastCameraY){
-            if ((TileMap_HEIGHT/8 - 18u) > cameraRow) set_bkg_submap(cameraColumn, cameraRow + 18u, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8); 
+            if ((TileMap_HEIGHT/8 - 18u) > cameraRow) set_bkg_based_submap(cameraColumn, cameraRow + 18u, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT); 
 
         }else{
 
-            set_bkg_submap(cameraColumn, cameraRow, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8);
+            set_bkg_based_submap(cameraColumn, cameraRow, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT);
         }
     }
 
@@ -65,7 +67,7 @@ void UpdateCameraSubMap(){
 }
 
 
-void UpdateCamera(){
+uint8_t UpdateCamera(){
 
     // If the camera is not scrolling?
     if(cameraScrollDirection==0){
@@ -77,6 +79,7 @@ void UpdateCamera(){
             if(cameraSectionColumn<TileMap_HEIGHT/CAMERA_VERTICAL_SIZE){
                 cameraSectionColumn++;
                 cameraScrollDirection=J_RIGHT;
+                return 1;
             }
 
         // If link is on the left edge
@@ -84,6 +87,7 @@ void UpdateCamera(){
             if(cameraSectionColumn>0){
                 cameraSectionColumn--;
                 cameraScrollDirection=J_LEFT;
+                return 1;
             }
         }
 
@@ -94,6 +98,7 @@ void UpdateCamera(){
             if(cameraSectionRow<TileMap_HEIGHT/CAMERA_VERTICAL_SIZE){
                 cameraSectionRow++;
                 cameraScrollDirection=J_DOWN;
+                return 1;
             }
 
         // If link is on the top edge
@@ -101,32 +106,16 @@ void UpdateCamera(){
             if(cameraSectionRow>0){
                 cameraSectionRow--;
                 cameraScrollDirection=J_UP;
+                return 1;
             }
         }
     }else{
         
-        // If the camera is not at it's desired y position
-        if((cameraY>>4)!=cameraSectionRow*CAMERA_VERTICAL_SIZE){
+        // If the camera is not at it's desired xor y position
+        if((cameraY>>4)!=cameraSectionRow*CAMERA_VERTICAL_SIZE||(cameraX>>4)!=cameraSectionColumn*160){
 
-            // Is the camera moving downward or upward?
-            if((cameraY>>4)<cameraSectionRow*CAMERA_VERTICAL_SIZE){
-                cameraY+=CAMERA_SCROLL_SPEED;
-            }else {
-                cameraY-=CAMERA_SCROLL_SPEED;
-            }
-
-            // Update the submap
-            UpdateCameraSubMap();
-
-        // If the camera is not at it's desired x position
-        }else if((cameraX>>4)!=cameraSectionColumn*160){
-
-            // Is the camera moving to the left or right?
-            if((cameraX>>4)<cameraSectionColumn*160){
-                cameraX+=CAMERA_SCROLL_SPEED;
-            }else {
-                cameraX-=CAMERA_SCROLL_SPEED;
-            }
+            cameraX+=J_DIRECTIONS[cameraScrollDirection][0]*CAMERA_SCROLL_SPEED;
+            cameraY+=J_DIRECTIONS[cameraScrollDirection][1]*CAMERA_SCROLL_SPEED;
 
             // Update the submap
             UpdateCameraSubMap();
@@ -134,7 +123,10 @@ void UpdateCamera(){
 
             // We are not scrolling anymore
             cameraScrollDirection=0;
+            cameraSection=CAMERA_CURRENT_AREA;
         }
 
     }
+
+    return 0;
 }

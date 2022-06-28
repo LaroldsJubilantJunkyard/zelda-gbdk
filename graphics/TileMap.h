@@ -9,8 +9,8 @@
 #define TileMap_TILE_ORIGIN 0
 #define TileMap_TILE_W 8
 #define TileMap_TILE_H 8
-#define TileMap_WIDTH 160
-#define TileMap_HEIGHT 144
+#define TileMap_WIDTH 320
+#define TileMap_HEIGHT 288
 #define TileMap_TILE_COUNT 0
 #define TileMap_PALETTE_COUNT 1
 #define TileMap_COLORS_PER_PALETTE 4
@@ -21,6 +21,6 @@ BANKREF_EXTERN(TileMap)
 
 extern const palette_color_t TileMap_palettes[4];
 
-extern const unsigned char TileMap_map[360];
+extern const unsigned char TileMap_map[1440];
 
 #endif

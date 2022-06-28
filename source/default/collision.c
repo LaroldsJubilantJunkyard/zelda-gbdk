@@ -2,6 +2,7 @@
 #include "graphics/TileMap.h"
 #include "link.h"
 #include "objects.h"
+#include "graphics/HUD.h"
 
 uint8_t CheckObjectIntersection2(Object* objectA, uint16_t x, uint16_t y){
 
@@ -53,20 +54,20 @@ uint8_t CheckObjectIntersection(Object* objectA, Object* objectB){
 
 uint8_t IntersectsSolidWorld(uint16_t left, uint16_t top, uint16_t width,uint16_t height){
 
-    uint16_t column=left/8;
-    uint16_t row = top/8;
+    uint16_t column=left>>3;
+    uint16_t row = top>>3;
 
     uint16_t topLeft = column+row*(TileMap_WIDTH/8);
 
     if(TileMap_map[topLeft]<1)return 1;
 
-    uint16_t column2=(left+width)/8;
+    uint16_t column2=(left+width)>>3;
 
     uint16_t topRight = column2+row*(TileMap_WIDTH/8);
 
     if(TileMap_map[topRight]<1)return 1;
     
-    uint16_t row2 = (top+height)/8;
+    uint16_t row2 = (top+height)>>3;
 
     uint16_t bottomRight = column2+row2*(TileMap_WIDTH/8);
 

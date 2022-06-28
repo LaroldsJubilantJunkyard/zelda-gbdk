@@ -22,6 +22,7 @@
 
 uint16_t linkSwordX,linkSwordY;
 int8_t linkSword = -1;
+uint8_t linkMaxHealth=5;
 
 
 const int8_t SwordOffsets[9][3][2]={

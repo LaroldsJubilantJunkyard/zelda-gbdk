@@ -131,6 +131,7 @@ Object* SpawnObject(ObjectType* type, uint16_t x, uint16_t y, uint8_t direction,
         break;
     }
 
+    nextObject->originalArea=CAMERA_CURRENT_AREA;
     nextObject->recycle=FALSE;
     nextObject->id=id;
     nextObject->blinkTimer=0;
@@ -139,8 +140,8 @@ Object* SpawnObject(ObjectType* type, uint16_t x, uint16_t y, uint8_t direction,
     nextObject->damageY=0;
     nextObject->next=0;
     nextObject->active=TRUE;
-    nextObject->x=x;
-    nextObject->y=y;
+    nextObject->x=((cameraSectionColumn*160)<<4)+(x<<4);
+    nextObject->y=((cameraSectionRow*CAMERA_VERTICAL_SIZE)<<4)+(y<<4);
     nextObject->helper1=0;
     nextObject->health=type->maxHealth;
     nextObject->type=type;
@@ -156,6 +157,50 @@ Object* SpawnObject(ObjectType* type, uint16_t x, uint16_t y, uint8_t direction,
     }
 
     return nextObject;
+}
+
+uint8_t RemoveWhenOutOffscreen(Object* object){
+
+    // If the camera isn't scrolling, we're fine
+    if(cameraScrollDirection!=0)return 0;
+
+    // If the player is in this object's section, were fine
+    if(object->originalArea==cameraSection)return 0;
+
+    if((object->x>>4)<(cameraX>>4)-8){
+
+        // This object needs to be recycled
+        object->recycle=TRUE;
+
+        return 0;
+    }
+
+    if((object->x>>4)>(cameraX>>4)+168){
+
+        // This object needs to be recycled
+        object->recycle=TRUE;
+
+        return 0;
+    }
+
+    if((object->y>>4)<(cameraY>>4)-8){
+
+        // This object needs to be recycled
+        object->recycle=TRUE;
+
+        return 0;
+    }
+
+    if((object->y>>4)>(cameraY>>4)+152){
+
+        // This object needs to be recycled
+        object->recycle=TRUE;
+
+        return 0;
+    }
+
+
+    return 0;
 }
 
 void RecycleObject(Object* objectToBeRecycled, Object* previousObject){
