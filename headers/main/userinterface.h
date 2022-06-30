@@ -8,5 +8,7 @@ void UpdateZenny();
 void UpdateAItem();
 void UpdateBItem();
 
+void DrawText(unsigned char *text, uint8_t top);
+
 
 #endif

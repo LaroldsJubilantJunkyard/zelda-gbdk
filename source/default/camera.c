@@ -38,10 +38,10 @@ void UpdateCameraSubMap(){
         lastCameraColumn=cameraColumn;
 
         if(cameraX>lastCameraX){
-            if ((TileMap_WIDTH/8 - 20u) > cameraColumn) set_bkg_based_submap(cameraColumn + 20u, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT);  
+            if ((TileMap_WIDTH/8 - 20u) > cameraColumn) set_bkg_based_submap(cameraColumn + 20u, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8,TILEMAP_TILES_START);  
 
         }else{
-            set_bkg_based_submap(cameraColumn, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT);   
+            set_bkg_based_submap(cameraColumn, cameraRow, 1, MIN(19u, TileMap_HEIGHT/8 - cameraRow), TileMap_map, TileMap_WIDTH/8,TILEMAP_TILES_START);   
 
         }
     }
@@ -53,11 +53,11 @@ void UpdateCameraSubMap(){
         lastCameraRow=cameraRow;
 
         if(cameraY>lastCameraY){
-            if ((TileMap_HEIGHT/8 - 18u) > cameraRow) set_bkg_based_submap(cameraColumn, cameraRow + 18u, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT); 
+            if ((TileMap_HEIGHT/8 - 18u) > cameraRow) set_bkg_based_submap(cameraColumn, cameraRow + 18u, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8,TILEMAP_TILES_START); 
 
         }else{
 
-            set_bkg_based_submap(cameraColumn, cameraRow, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8,HUD_TILE_COUNT);
+            set_bkg_based_submap(cameraColumn, cameraRow, MIN(21u, TileMap_WIDTH/8-cameraColumn), 1, TileMap_map, TileMap_WIDTH/8,TILEMAP_TILES_START);
         }
     }
 

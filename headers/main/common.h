@@ -6,6 +6,8 @@
 #define MIN(A,B) ((A)<(B)?(A):(B))
 #define MAX(A,B) ((A)>(B)?(A):(B))
 
+#define TILEMAP_TILES_START HUD_TILE_COUNT
+
 extern uint8_t joypadCurrent,joypadPrevious;
 
 extern const int8_t J_DIRECTIONS[9][2];
