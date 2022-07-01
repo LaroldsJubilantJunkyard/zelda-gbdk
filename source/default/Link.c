@@ -132,13 +132,14 @@ void HandleLinkInput(Object* object,uint16_t *nextX, uint16_t *nextY,uint8_t *fr
 
 uint8_t UpdateLink(Object* object, uint8_t sprite){
 
-
     // If we are damaged
     if(object->damageX!=0||object->damageY!=0){
 
         // Update for damaged
-        uint8_t done= Damaged(object,sprite);
+        Damaged(object,sprite);
 
+        // Alternate between our normal palette and palette 1
+        if(universalBlinkerFast>>4==0)return move_metasprite_with_palette(object,sprite,1);
         return move_metasprite_with_camera(object,sprite);
     }
 
@@ -178,15 +179,19 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
 
         if(frame<4){
 
+            // The sword slash animations only have 3 frames
+            // Limit the frame variable here so it stays in the final frame for a little bit
             if(frame>2)frame=2;
-            
-            object->currentMetasprite=LinkSwordMetasprites[object->direction][frame];
 
+            // Draw link's' sword slash animation
+            object->currentMetasprite=LinkSwordMetasprites[object->direction][frame];
             spriteCount+=move_metasprite_with_camera(object,sprite);
 
+            // Position link's sword based on it's frame
             linkSwordX=object->x+(SwordOffsets[object->direction][frame][0]<<4);
             linkSwordY=object->y+(SwordOffsets[object->direction][frame][1]<<4);
 
+            // Draw links sword
             spriteCount+=move_metasprite_with_camera2(SwordSlashMetasprites[object->direction][frame],8,sprite+spriteCount,linkSwordX,linkSwordY);
 
         }else {
@@ -197,10 +202,12 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
         }
     }
     
+    // If link is not using his sword
     if(linkSword==-1){
 
-        object->currentMetasprite=LinkMetasprites[object->direction][frame];
 
+        // draw his current metasprite
+        object->currentMetasprite=LinkMetasprites[object->direction][frame];
         spriteCount+=move_metasprite_with_camera(object,sprite);
     }
 

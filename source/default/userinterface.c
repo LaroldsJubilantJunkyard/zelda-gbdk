@@ -97,6 +97,7 @@ void DrawText(unsigned char *text, uint8_t top){
         }
     }
 
+    // Fill with black
     fill_bkg_rect(1,baseY,18,6,0x1B);
 
     while(text[len]!='\0'){
@@ -149,6 +150,14 @@ void DrawText(unsigned char *text, uint8_t top){
             }
             else if(c=='\"'){
                 tile=0x5B;
+                 isCurrentLetterNonAlphaNumeric=TRUE;
+            }
+            else if(c==','){
+                tile=0x5C;
+                 isCurrentLetterNonAlphaNumeric=TRUE;
+            }
+            else if(c=='\''){
+                tile=0x5D;
                  isCurrentLetterNonAlphaNumeric=TRUE;
             }
             else if(c>='0'&&c<='9')tile=0x50+(c-'0');

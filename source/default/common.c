@@ -22,43 +22,47 @@ const int8_t J_DIRECTIONS[9][2]={
 
 uint8_t move_metasprite_with_camera2(const metasprite_t * metasprite, uint8_t base_tile, uint8_t base_sprite, uint16_t x, uint16_t y) {
 
-     x = 8+(x-cameraX)>>4;
+     x = 8+((x-cameraX)>>4);
     
     if(x>255)return 0;
 
-     y = 16+(y-cameraY)>>4;
+     y = 16+((y-cameraY)>>4);
 
     if(y>255)return 0;
     
     return move_metasprite(metasprite,base_tile,base_sprite,x,y);
 }
 
-uint8_t move_metasprite_with_palette(Object* object,uint8_t sprite){
-        uint8_t dy = object->currentMetasprite->dy;
+uint8_t move_metasprite_with_palette(Object* object,uint8_t sprite,uint8_t palette){
+        metasprite_t temp[8];
 
-         metasprite_t* currentMetasprite = object->currentMetasprite;
 
-        uint16_t x = 8+( object->x>>4);
-        uint16_t y =16+( object->y>>4);
+        const metasprite_t* currentMetasprite = object->currentMetasprite;
 
         uint8_t usedCount = 0;
 
         while(currentMetasprite->dy!=metasprite_end){
 
-            x+=currentMetasprite->dx;
-            y+=currentMetasprite->dy;
+            // Retain sprite position, and tile
+            temp[usedCount].dy=currentMetasprite->dy;
+            temp[usedCount].dx=currentMetasprite->dx;
+            temp[usedCount].dtile=currentMetasprite->dtile;
+            temp[usedCount].props=currentMetasprite->props;
 
-            move_sprite(sprite,x,y);
-            set_sprite_tile(sprite,currentMetasprite->dtile);
-            set_sprite_prop(sprite,1);
+            // If we should blink for damage
+            // Change the properties, but retain the flip
+            temp[usedCount].props= palette | currentMetasprite->props;
+
 
             usedCount++;
-            sprite++;
 
             currentMetasprite++;
         }
-        
-        return usedCount;
+
+        temp[usedCount].dy=metasprite_end;
+
+
+        return move_metasprite_with_camera2(temp,object->type->startTile,sprite,object->x,object->y);
 }
 
 uint8_t move_metasprite_with_camera(Object* object,uint8_t sprite) {

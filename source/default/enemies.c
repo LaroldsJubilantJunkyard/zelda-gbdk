@@ -32,13 +32,13 @@ void ReceiveDamageFromLinksSword(Object* object){
 
         object->health--;
         
-        object->damageX = ((object->x>>4)-(link->x>>4))*2;
-        object->damageY = ((object->y>>4)-(link->y>>4))*2;
+        object->damageX = ((object->x>>4)-(link->x>>4))*3;
+        object->damageY = ((object->y>>4)-(link->y>>4))*3;
 
     }
 }
 
-uint8_t UpdateDamagedEnemy(Object* object, uint8_t sprite){
+uint8_t UpdateDamagedEnemy(Object* object, uint8_t sprite,uint8_t* count){
 
     
 
@@ -48,14 +48,23 @@ uint8_t UpdateDamagedEnemy(Object* object, uint8_t sprite){
         // Update for damaged
         uint8_t done= Damaged(object,sprite);
 
-        if(object->health==0){
+        if(done&&object->health==0){
 
             object->recycle=TRUE;
-            SpawnObject(EXPLOSION_OBJECT_TYPE,object->x,object->y,J_DOWN,0);
-            return 1;
+            SpawnObject(EXPLOSION_OBJECT_TYPE,(object->x>>4)-(cameraX>>4),(object->y>>4)-(cameraY>>4),J_DOWN,0);
+            return 0;
         }
 
-        return move_metasprite_with_camera(object,sprite);
+        if((universalBlinkerFast>>4)==0){
+            
+            *count= move_metasprite_with_palette(object,sprite,1);
+        }else{
+            
+            *count= move_metasprite_with_camera(object,sprite);
+        }
+
+        return 1;
+
     }
 
     return 0;
@@ -63,7 +72,8 @@ uint8_t UpdateDamagedEnemy(Object* object, uint8_t sprite){
 
 uint8_t UpdateMoblin(Object* object, uint8_t sprite){
 
-    if(UpdateDamagedEnemy(object,sprite))return 0;
+    uint8_t count=0;
+    if(UpdateDamagedEnemy(object,sprite,&count))return count;
     if(RemoveWhenOutOffscreen(object))return 0;
 
     uint8_t frame = 0;

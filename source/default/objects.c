@@ -23,6 +23,7 @@ Object* firstObject=0,*lastObject=0;
 ObjectType* firstObjectType=0,*lastObjectType=0;
 
 uint16_t universalBlinker=0;
+uint16_t universalBlinkerFast=0;
 uint8_t spriteVRamIsDirty=FALSE;
 
 void UpdateSpriteVRam(){
@@ -244,7 +245,7 @@ uint8_t Damaged(Object* object,uint8_t sprite){
 
     MoveToNextPosition(object,object->x+object->damageX,object->y+object->damageY);
 
-    #define DAMAGE_DECREASE_AMOUNT 10
+    #define DAMAGE_DECREASE_AMOUNT 6
 
     if(object->damageY>DAMAGE_DECREASE_AMOUNT){
         object->damageY-=DAMAGE_DECREASE_AMOUNT;
@@ -269,6 +270,8 @@ void UpdateAllObjects(){
 
     // This will be used for anything flashing/blinking from damage
     if((++universalBlinker>>4)>1)universalBlinker=0;
+    universalBlinkerFast+=3;
+    if((universalBlinkerFast>>4)>1)universalBlinkerFast=0;
 
     Object* previousObject = 0;
     Object* currentObject = firstObject;

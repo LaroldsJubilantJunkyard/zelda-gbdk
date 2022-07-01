@@ -43,7 +43,7 @@ typedef struct ObjectType{
 
 
 extern Object* link;
-extern uint16_t universalBlinker;
+extern uint16_t universalBlinker,universalBlinkerFast;
 extern ObjectType objectTypes[];
 
 extern ObjectType* firstObjectType,*lastObjectType;
