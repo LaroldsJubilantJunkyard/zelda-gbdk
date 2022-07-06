@@ -15,7 +15,7 @@ SET PNG2ASSET=D:\Business\LaroldsJubilantJunkyard\projects\gbdk-2020\gbdk-suppor
 %PNG2ASSET% graphics\LinkSpritesUp.png -c source\gen\default\graphics\LinkSpritesUp.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\LinkSpritesDown.png -c source\gen\default\graphics\LinkSpritesDown.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\LinkSpritesLeft.png -c source\gen\default\graphics\LinkSpritesLeft.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
-%PNG2ASSET% graphics\LinkPushSprites.png -c source\gen\default\graphics\LinkPushSprites.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+
 %PNG2ASSET% graphics\LinkShieldSpritesDown.png -c source\gen\default\graphics\LinkShieldSpritesDown.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\LinkShieldSpritesUp.png -c source\gen\default\graphics\LinkShieldSpritesUp.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\LinkShieldSpritesLeft.png -c source\gen\default\graphics\LinkShieldSpritesLeft.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
@@ -26,21 +26,23 @@ SET PNG2ASSET=D:\Business\LaroldsJubilantJunkyard\projects\gbdk-2020\gbdk-suppor
 %PNG2ASSET% graphics\LinkSwordSpritesDown.png -c source\gen\default\graphics\LinkSwordSpritesDown.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\LinkSwordSpritesLeft.png -c source\gen\default\graphics\LinkSwordSpritesLeft.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 
-%PNG2ASSET% graphics\LinkActiveShieldSprites.png -c source\gen\default\graphics\LinkActiveShieldSprites.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\SwordSlashUp.png -c source\gen\default\graphics\SwordSlashUp.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\SwordSlashRight.png -c source\gen\default\graphics\SwordSlashRight.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\SwordSlashLeft.png -c source\gen\default\graphics\SwordSlashLeft.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 %PNG2ASSET% graphics\SwordSlashDown.png -c source\gen\default\graphics\SwordSlashDown.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 
 :: NPCs
-%PNG2ASSET% graphics\NPCMarin.png -c source\gen\default\graphics\NPCMarin.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
-%PNG2ASSET% graphics\MovableBlock.png -c source\gen\default\graphics\MovableBlock.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+%PNG2ASSET% graphics\NPC-MarinDown.png -c source\gen\default\graphics\NPCMarinDown.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+%PNG2ASSET% graphics\NPC-MarinUp.png -c source\gen\default\graphics\NPCMarinUp.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+%PNG2ASSET% graphics\NPC-MarinLeft.png -c source\gen\default\graphics\NPCMarinLeft.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+%PNG2ASSET% graphics\NPC-MarinRight.png -c source\gen\default\graphics\NPCMarinRight.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+:: %PNG2ASSET% graphics\MovableBlock.png -c source\gen\default\graphics\MovableBlock.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 
 %PNG2ASSET% graphics\Explosion.png -c source\gen\default\graphics\Explosion.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 :: Enemies
 %PNG2ASSET% graphics\Moblin.png -c source\gen\default\graphics\Moblin.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
-%PNG2ASSET% graphics\Gel.png -c source\gen\default\graphics\Gel.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
-%PNG2ASSET% graphics\Octoroc.png -c source\gen\default\graphics\Octoroc.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+:: %PNG2ASSET% graphics\Gel.png -c source\gen\default\graphics\Gel.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
+:: %PNG2ASSET% graphics\Octoroc.png -c source\gen\default\graphics\Octoroc.c -sw 16 -sh 16 -spr8x16 -keep_palette_order -noflip
 
 :: Backgrounds & Maps
 %PNG2ASSET% graphics\HUD.png -c source\gen\default\graphics\HUD.c -map -use_map_attributes -noflip -keep_palette_order

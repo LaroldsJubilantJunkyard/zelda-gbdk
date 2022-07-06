@@ -4,6 +4,7 @@
 #include "objects.h"
 #include "objectspawning.h"
 #include "link.h"
+#include "world.h"
 #include "userinterface.h"
 #include "common.h"
 #include "graphics/TileSet.h"
@@ -13,6 +14,7 @@
 #include "graphics/AlphaNumeric.h"
 
 Object* link=0;
+
 
 void main(){
     
@@ -28,11 +30,10 @@ void main(){
     set_sprite_palette(0,LinkSwordSpritesDown_PALETTE_COUNT,LinkSwordSpritesDown_palettes);
     set_bkg_palette(0,HUD_PALETTE_COUNT,HUD_palettes);
     set_bkg_data(0,HUD_TILE_COUNT,HUD_tiles);
-    set_bkg_data(TILEMAP_TILES_START,TileSet_TILE_COUNT,TileSet_tiles);
-    set_bkg_data(HUD_TILE_COUNT,TileSet_TILE_COUNT,TileSet_tiles);
-    set_bkg_based_submap(0,0,21,19,TileMap_map,TileMap_WIDTH/8,TILEMAP_TILES_START);
 
     SetupCamera();
+
+    init_world(0,TileMap_map,TileMap_map_attributes,TileMap_WIDTH/8,TileSet_TILE_COUNT,TileSet_tiles);
 
     link=SpawnObject(LINK_OBJECT_TYPE,40,80,J_DOWN,0);
 
@@ -41,8 +42,6 @@ void main(){
     link->health=linkMaxHealth;
 
     UpdateInterfaceFull();
-
-    DrawText("Your name is not zelda. Your name is in fact link. I dont get why",TRUE);
 
     while(TRUE){
 

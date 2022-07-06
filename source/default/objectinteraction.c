@@ -1,5 +1,10 @@
 #include "objects.h"
+#include "userinterface.h"
 
-void InteractWithObject(Object* object){
+uint8_t InteractWithObject(Object* object){
 
+
+    DrawText("Your name is not zelda. Your name is in fact link. I dont get why",TRUE);
+
+    return 1;
 }

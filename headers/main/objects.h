@@ -57,8 +57,11 @@ uint8_t MoveToNextPosition(Object* object, uint16_t nextX, uint16_t nextY);
 uint8_t Damaged(Object* object,uint8_t sprite);
 uint8_t RemoveWhenOutOffscreen(Object* object);
 
+void StopLinkFromOverlapping(Object* object);
+
 
 #define MOBLIN_OBJECT_TYPE &objectTypes[2]
+#define MARIN_OBJECT_TYPE &objectTypes[3]
 #define EXPLOSION_OBJECT_TYPE &objectTypes[1]
 #define LINK_OBJECT_TYPE &objectTypes[0]
 

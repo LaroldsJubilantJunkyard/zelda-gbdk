@@ -1,21 +1,27 @@
 #include <gb/gb.h>
 #include "camera.h"
 #include "collision.h"
+
+#include "link.h"
 #include "common.h"
 #include "objects.h"
 #include "graphics/Explosion.h"
 #include "graphics/Moblin.h"
 #include "graphics/SwordSlashDown.h"
+#include "graphics/NPCMarinDown.h"
 #include "graphics/LinkSpritesDown.h"
 
 extern uint8_t UpdateExplosion(Object* object, uint8_t sprite);
 extern uint8_t UpdateLink(Object* object, uint8_t sprite);
 extern uint8_t UpdateMoblin(Object* object, uint8_t sprite);
+extern uint8_t UpdateMarin(Object* object,uint8_t sprite);
 
 ObjectType objectTypes[]={
-    {.active=FALSE,.bank=0,.width=10,.height=10,.tileCount=LinkSpritesDown_TILE_COUNT,.paddedTileCount=18,.tileData=LinkSpritesDown_tiles,.count=0,.maxHealth=3,.next=0,.startTile=0,.update=&UpdateLink},
+    {.active=FALSE,.bank=0,.width=16,.height=16,.tileCount=LinkSpritesDown_TILE_COUNT,.paddedTileCount=18,.tileData=LinkSpritesDown_tiles,.count=0,.maxHealth=3,.next=0,.startTile=0,.update=&UpdateLink},
     {.active=FALSE,.bank=0,.width=16,.height=16,.tileCount=Explosion_TILE_COUNT,.paddedTileCount=0,.tileData=Explosion_tiles,.count=0,.maxHealth=0,.next=0,.startTile=0,.update=&UpdateExplosion},
-    {.active=FALSE,.bank=0,.width=10,.height=10,.tileCount=Moblin_TILE_COUNT,.paddedTileCount=0,.tileData=Moblin_tiles,.count=0,.maxHealth=3,.next=0,.startTile=0,.update=&UpdateMoblin},
+    {.active=FALSE,.bank=0,.width=12,.height=12,.tileCount=Moblin_TILE_COUNT,.paddedTileCount=0,.tileData=Moblin_tiles,.count=0,.maxHealth=3,.next=0,.startTile=0,.update=&UpdateMoblin},
+    {.active=FALSE,.bank=0,.width=16,.height=16,.tileCount=NPCMarinDown_TILE_COUNT,.paddedTileCount=0,.tileData=NPCMarinDown_tiles,.count=0,.maxHealth=3,.next=0,.startTile=0,.update=&UpdateMarin},
+    
 };
 
 Object objects[MAX_NUMBER_OF_OBJECTS];
@@ -240,6 +246,15 @@ uint8_t MoveToNextPosition(Object* object, uint16_t nextX, uint16_t nextY){
     return any;
 }
 
+void StopLinkFromOverlapping(Object* object){
+    if(CheckObjectIntersection3(object,nextX,link->y,10,12)){
+        nextX=link->x;
+    }
+    if(CheckObjectIntersection3(object,link->x,nextY,10,12)){
+        nextY=link->y;
+    }
+}
+
 
 uint8_t Damaged(Object* object,uint8_t sprite){
 
@@ -301,6 +316,8 @@ void UpdateAllObjects(){
 
 
     }
+
+    sprite+=FinishLinkUpdate(sprite);
 
     // Update sprite vram after everything has updated
     if(spriteVRamIsDirty){

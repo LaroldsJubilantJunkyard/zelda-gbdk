@@ -3,6 +3,7 @@
 #include "objects.h"
 #include "common.h"
 #include "camera.h"
+#include "objectinteraction.h"
 #include "collision.h"
 #include "graphics/LinkSpritesDown.h"
 #include "graphics/LinkSpritesUp.h"
@@ -20,9 +21,11 @@
 #include "graphics/LinkSwordSpritesRight.h"
 
 
-uint16_t linkSwordX,linkSwordY;
+uint16_t linkSwordX,linkSwordY,nextX,nextY;
 int8_t linkSword = -1;
 uint8_t linkMaxHealth=5;
+
+uint8_t frame = 0;
 
 
 const int8_t SwordOffsets[9][3][2]={
@@ -111,6 +114,24 @@ void HandleLinkInput(Object* object,uint16_t *nextX, uint16_t *nextY,uint8_t *fr
 
         if((joypadCurrent&J_A)&&!(joypadPrevious&J_A)&&linkSword==-1){
 
+            Object* currentObject = firstObject;
+
+            uint16_t lx = (link->x)+((J_DIRECTIONS[link->direction][0]*16)<<4);
+            uint16_t ly = (link->y)+((J_DIRECTIONS[link->direction][1]*16)<<4);
+
+            while(currentObject!=0){
+
+                if(CheckObjectIntersection2(currentObject,lx,ly)){
+                    
+                    // If we can interact with this object
+                    if(InteractWithObject(currentObject)){
+
+                        return;
+                    }
+                }
+                currentObject=currentObject->next;
+            }
+
             linkSword=0;
 
             switch(object->direction){
@@ -138,16 +159,14 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
         // Update for damaged
         Damaged(object,sprite);
 
-        // Alternate between our normal palette and palette 1
-        if(universalBlinkerFast>>4==0)return move_metasprite_with_palette(object,sprite,1);
-        return move_metasprite_with_camera(object,sprite);
+        return 0;
     }
 
 
-    uint16_t nextX=object->x;
-    uint16_t nextY=object->y;
+     nextX=object->x;
+     nextY=object->y;
 
-    uint8_t frame = 0;
+     frame = 0;
 
     if(cameraScrollDirection!=0){
         if(cameraScrollDirection==J_DOWN)nextY+=4;
@@ -167,8 +186,24 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
         }
     }
 
-    MoveToNextPosition(object,nextX,nextY);
+    return 0;
 
+}
+
+uint8_t FinishLinkUpdate(uint8_t sprite){
+
+    Object* object = link;
+
+    // If we are damaged
+    if(object->damageX!=0||object->damageY!=0){
+
+        // Alternate between our normal palette and palette 1
+        if(universalBlinkerFast>>4==0)return move_metasprite_with_palette(object,sprite,1);
+        return move_metasprite_with_camera(object,sprite);
+    }
+
+
+    MoveToNextPosition(object,nextX,nextY);
 
     uint8_t spriteCount=0;
 

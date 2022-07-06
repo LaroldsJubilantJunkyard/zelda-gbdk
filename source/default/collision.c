@@ -32,6 +32,26 @@ uint8_t CheckCollisionAgainstLinksSword2(uint16_t x, uint16_t y, uint8_t width, 
 }
 
 
+uint8_t CheckObjectIntersection3(Object* objectA, int16_t x, int16_t y, int16_t w, int16_t h){
+
+    int16_t xd = (objectA->x>>4)-(x>>4);
+
+    int16_t hw2=((int16_t)objectA->type->width/2)+(w/2);
+
+    if(xd>hw2)return 0;
+    if(xd<-hw2)return 0;
+
+    int16_t hh2=((int16_t)objectA->type->height/2)+(h/2);
+
+    int16_t yd = (objectA->y>>4)-(y>>4);
+
+    if(yd>hh2)return 0;
+    if(yd<-hh2)return 0;
+
+    return 1;
+}
+
+
 uint8_t CheckObjectIntersection(Object* objectA, Object* objectB){
 
     int16_t xd = (objectA->x>>4)-(objectB->x>>4);
