@@ -85,9 +85,20 @@ void DrawText(unsigned char *text, uint8_t top){
     uint8_t row=1;
 
     uint8_t baseY = top? 1: 10;
+    uint8_t topY=baseY*8;
+    uint8_t bottomY=topY+48;
 
     joypadCurrent=0;
     joypadPrevious=0;
+
+    // Hide all sprites that would appear over the dialog box
+    for(uint8_t i=0;i<MAX_HARDWARE_SPRITES;i++){
+
+        // Offset since sprites are drawn -16 from their shadow OAM y coordinate
+        if(shadow_OAM[i].y>=topY+8&&shadow_OAM[i].y<=bottomY+8){
+            hide_sprite(i);
+        }
+    }
 
     // Copy background tiles to the window
     // So we don't have to 
@@ -102,7 +113,7 @@ void DrawText(unsigned char *text, uint8_t top){
 
     while(text[len]!='\0'){
 
-        //
+        // If we've scrolled enough
         if(row>3){
 
 
