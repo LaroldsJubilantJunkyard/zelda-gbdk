@@ -2,6 +2,7 @@
 #include "common.h"
 #include "camera.h"
 #include "objects.h"
+#include "userinterface.h"
 #include "collision.h"
 #include "link.h"
 #include "graphics/Moblin.h"
@@ -16,6 +17,11 @@ void DamageLinkWhenClose(Object* object){
     if(link->damageX==0&&link->damageY==0){
 
         if(CheckObjectIntersection(link,object)){
+
+            if(link->health>0)link->health--;
+
+            // Update the hearts shown
+            UpdateHearts();
 
             link->damageX=((link->x>>4)-(object->x>>4))*5;
             link->damageY=((link->y>>4)-(object->y>>4))*5;

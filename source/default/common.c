@@ -67,12 +67,6 @@ uint8_t move_metasprite_with_palette(Object* object,uint8_t sprite,uint8_t palet
 
 uint8_t move_metasprite_with_camera(Object* object,uint8_t sprite) {
 
-    // If we are blinking
-    if((object->damageX!=0||object->damageY!=0)&&(universalBlinker>>4)==0){
-
-        return 0;
-    }
-
     uint16_t x = 8+((object->x-cameraX)>>4);
 
     // The move_metasprite function's x parameter is a 8-bit integer. 

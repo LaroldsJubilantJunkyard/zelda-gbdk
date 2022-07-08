@@ -89,7 +89,7 @@ void UpdateLinkDefaultSprites(Object* object){
 }
 
 void HandleLinkInput(Object* object,uint16_t *nextX, uint16_t *nextY,uint8_t *frame){
-    if(linkSword==-1){
+    if(linkSword==-1 && cameraScrollDirection==0){
             if(joypadCurrent&J_RIGHT){
                 *nextX+=8;
                 *frame=universalBlinker>>4;
@@ -121,7 +121,7 @@ void HandleLinkInput(Object* object,uint16_t *nextX, uint16_t *nextY,uint8_t *fr
 
             while(currentObject!=0){
 
-                if(CheckObjectIntersection2(currentObject,lx,ly)){
+                if(CheckObjectIntersection3(currentObject,lx,ly,16,16)){
                     
                     // If we can interact with this object
                     if(InteractWithObject(currentObject)){
@@ -155,9 +155,12 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
 
     // If we are damaged
     if(object->damageX!=0||object->damageY!=0){
+        
+        nextX=object->x+object->damageX;
+        nextY=object->y+object->damageY;
 
         // Update for damaged
-        Damaged(object,sprite);
+        DamagedNoMove(object,sprite);
 
         return 0;
     }
@@ -169,10 +172,12 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
      frame = 0;
 
     if(cameraScrollDirection!=0){
-        if(cameraScrollDirection==J_DOWN)nextY+=4;
-        if(cameraScrollDirection==J_UP)nextY-=4;
-        if(cameraScrollDirection==J_LEFT)nextX-=4;
-        if(cameraScrollDirection==J_RIGHT)nextX+=4;
+
+        object->direction=cameraScrollDirection;
+
+        // Move in the scroll direction
+        nextX+=J_DIRECTIONS[cameraScrollDirection][0]*4;
+        nextY+=J_DIRECTIONS[cameraScrollDirection][1]*4;
     }else{
 
         uint8_t previousObjectDirection=object->direction;
@@ -190,9 +195,19 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
 
 }
 
+/**
+ * @brief Called after all objects have updated
+ * This should becalled after all objects have been updated. This method gives objects the ability to stop intersection/overlap with link. Without having to loop
+ * through each object unneccesarily.
+ * @param sprite The starting sprite to use when drawing metasprites
+ * @return uint8_t How many sprites link has used
+ */
 uint8_t FinishLinkUpdate(uint8_t sprite){
 
     Object* object = link;
+
+    // Move to the next position for link
+    MoveToNextPosition(object,nextX,nextY);
 
     // If we are damaged
     if(object->damageX!=0||object->damageY!=0){
@@ -202,8 +217,23 @@ uint8_t FinishLinkUpdate(uint8_t sprite){
         return move_metasprite_with_camera(object,sprite);
     }
 
+    // If the camera is scrolling
+    if(cameraScrollDirection!=0){
 
-    MoveToNextPosition(object,nextX,nextY);
+        // If we are not facing the scrolling direction
+        if(object->direction!=cameraScrollDirection){
+
+            // Update our direction
+            object->direction=cameraScrollDirection;
+
+            // Update links sprites
+            UpdateLinkDefaultSprites(object);
+        }
+        
+        // set our metasprite based on the universal blinker
+        object->currentMetasprite=LinkMetasprites[object->direction][universalBlinker>>4];
+        return move_metasprite_with_camera(object,sprite);
+    }
 
     uint8_t spriteCount=0;
 

@@ -6,7 +6,13 @@ uint8_t InteractWithObject(Object* object){
 
     uint8_t drawAtTop = ((link->y>>4)-(cameraY>>4)) > (CAMERA_VERTICAL_SIZE/2);
 
-    DrawText("Your name is not zelda. Your name is in fact link. I dont get why",drawAtTop);
+    if(object->type==MARIN_OBJECT_TYPE){
 
-    return 1;
+        DrawText("Your name is not zelda. Your name is in fact link. I dont get why",drawAtTop);
+
+        return 1;
+    }
+
+
+    return 0;
 }

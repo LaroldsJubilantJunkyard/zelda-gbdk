@@ -57,6 +57,7 @@ uint8_t MoveToNextPosition(Object* object, uint16_t nextX, uint16_t nextY);
 uint8_t Damaged(Object* object,uint8_t sprite);
 uint8_t RemoveWhenOutOffscreen(Object* object);
 
+uint8_t DamagedNoMove(Object* object,uint8_t sprite);
 void StopLinkFromOverlapping(Object* object);
 
 

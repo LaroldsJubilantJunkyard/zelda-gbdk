@@ -256,12 +256,12 @@ void StopLinkFromOverlapping(Object* object){
 }
 
 
-uint8_t Damaged(Object* object,uint8_t sprite){
-
-    MoveToNextPosition(object,object->x+object->damageX,object->y+object->damageY);
-
     #define DAMAGE_DECREASE_AMOUNT 6
 
+
+
+
+uint8_t DamagedNoMove(Object* object,uint8_t sprite){
     if(object->damageY>DAMAGE_DECREASE_AMOUNT){
         object->damageY-=DAMAGE_DECREASE_AMOUNT;
     }else if(object->damageY<-DAMAGE_DECREASE_AMOUNT){
@@ -281,6 +281,12 @@ uint8_t Damaged(Object* object,uint8_t sprite){
     return object->damageX!=0||object->damageY!=0;
 }
 
+uint8_t Damaged(Object* object,uint8_t sprite){
+
+    MoveToNextPosition(object,object->x+object->damageX,object->y+object->damageY);
+
+    return DamagedNoMove( object, sprite);
+}
 void UpdateAllObjects(){
 
     // This will be used for anything flashing/blinking from damage

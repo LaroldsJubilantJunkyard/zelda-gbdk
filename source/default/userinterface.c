@@ -57,7 +57,7 @@ void UpdateHearts(){
         uint8_t row = i/7;
         uint8_t column = i%7;
         
-        if(i<=linkMaxHealth){
+        if(i<linkMaxHealth){
             VBK_REG=1;
             set_win_tile_xy(13+column,row,3);
             VBK_REG=0;
