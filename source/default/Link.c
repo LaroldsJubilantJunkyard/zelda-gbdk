@@ -41,6 +41,34 @@ const int8_t SwordOffsets[9][3][2]={
 };
 
 
+const uint8_t LinkSpritesTileCounts[]={
+    0,
+    LinkSpritesRight_TILE_COUNT,
+    LinkSpritesLeft_TILE_COUNT,
+    0,
+    LinkSpritesUp_TILE_COUNT,
+    0,
+    0,
+    0,
+    LinkSpritesDown_TILE_COUNT,
+
+};
+
+
+const uint8_t* LinkSpritesTiles[]={
+    0,
+    LinkSpritesRight_tiles,
+    LinkSpritesLeft_tiles,
+    0,
+    LinkSpritesUp_tiles,
+    0,
+    0,
+    0,
+    LinkSpritesDown_tiles,
+
+};
+
+
 const metasprite_t** LinkMetasprites[]={
     0,
     LinkSpritesRight_metasprites,
@@ -80,12 +108,12 @@ const metasprite_t** SwordSlashMetasprites[]={
 };
 
 void UpdateLinkDefaultSprites(Object* object){
-    switch(object->direction){
-        case J_DOWN: set_sprite_data(0,LinkSpritesDown_TILE_COUNT,LinkSpritesDown_tiles);break;
-        case J_UP: set_sprite_data(0,LinkSpritesUp_TILE_COUNT,LinkSpritesUp_tiles);break;
-        case J_LEFT: set_sprite_data(0,LinkSpritesLeft_TILE_COUNT,LinkSpritesLeft_tiles);break;
-        case J_RIGHT: set_sprite_data(0,LinkSpritesRight_TILE_COUNT,LinkSpritesRight_tiles);break;
-    }
+
+    // Change our object's data for when vram is changed, so it doesn't default
+    object->type->tileData = LinkSpritesDown_tiles;
+
+    // Update our vram for the proper direction
+    set_sprite_data(0,LinkSpritesTileCounts[object->direction],LinkSpritesTiles[object->direction]);
 }
 
 void HandleLinkInput(Object* object,uint16_t *nextX, uint16_t *nextY,uint8_t *frame){
