@@ -16,37 +16,42 @@ uint8_t UpdateExplosion(Object* object, uint8_t sprite){
 
     uint8_t spriteCount=0;
 
+    uint8_t y2 = object->y-(4<<4);
+    uint8_t y3 = (4<<4)+object->y;
+    uint8_t x2 = (4<<4)+(object->x);
+    uint8_t x3 = (object->x)-(4<<4);
+
     switch (frame)
     {
         case 0: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[0],object->type->startTile,sprite+spriteCount,(4<<4)+(object->x),object->y-(4<<4));
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[0],object->type->startTile,sprite+spriteCount,(object->x)-(4<<4),(4<<4)+object->y);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x3,y3);
             break;
         case 1: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[0],object->type->startTile,sprite+spriteCount,(4<<4)+(object->x),object->y-(4<<4));
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[0],object->type->startTile,sprite+spriteCount,(object->x)-(4<<4),(4<<4)+object->y);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x3,y3);
             break;
         case 2: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(4<<4)+(object->x),object->y-(4<<4));
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(object->x)-(4<<4),(4<<4)+object->y);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
             break;
         case 3: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(4<<4)+(object->x),object->y-(4<<4));
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(object->x)-(4<<4),(4<<4)+object->y);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
             break;
         case 4: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(4<<4)+(object->x),object->y-(4<<4));
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(object->x)-(4<<4),(4<<4)+object->y);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
             break;
         case 5: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,object->x,object->y);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,object->x,object->y);
             break;
         case 6: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(4<<4)+(object->x),object->y-(4<<4));
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[1],object->type->startTile,sprite+spriteCount,(object->x)-(4<<4),(4<<4)+object->y);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
             break;
         case 7: 
-            spriteCount+=move_metasprite_with_camera2(Explosion_metasprites[2],object->type->startTile,sprite+spriteCount,object->x,object->y);
+            move_metasprite_with_camera(Explosion_metasprites[2],object->type->startTile,object->x,object->y);
             break;
     }
 

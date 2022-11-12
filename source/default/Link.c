@@ -1,9 +1,12 @@
+#pragma bank 255
+
 #include <gb/gb.h>
 #include <gb/metasprites.h>
 #include "objects.h"
 #include "common.h"
+#include "world.h"
 #include "camera.h"
-#include "objectinteraction.h"
+#include "graphics/HUD.h"
 #include "collision.h"
 #include "graphics/LinkSpritesDown.h"
 #include "graphics/LinkSpritesUp.h"
@@ -20,207 +23,504 @@
 #include "graphics/LinkSwordSpritesUp.h"
 #include "graphics/LinkSwordSpritesRight.h"
 
+BANKREF(LinkBank)
 
-uint16_t linkSwordX,linkSwordY,nextX,nextY;
+uint8_t linkLastBank;
+int16_t linkSwordX, linkSwordY;
+int16_t nextX, nextY, trueNextX, trueNextY;
+
+int16_t linkSwordTrueX = 0;
+int16_t linkSwordTrueY = 0;
 int8_t linkSword = -1;
-uint8_t linkMaxHealth=5;
+uint8_t linkMaxHealth = 5;
 
 uint8_t frame = 0;
 
+extern uint8_t gotSword;
 
-const int8_t SwordOffsets[9][3][2]={
-    {{0,0},{0,0},{0,0}},
-    {{0,-16},{8,-8},{16,0}}, // right
-    {{0,-16},{-8,-8},{-16,0}}, // left
-    {{0,0},{0,0},{0,0}},
-    {{16,0},{8,-8},{0,-16}}, // up
-    {{0,0},{0,0},{0,0}},
-    {{0,0},{0,0},{0,0}},
-    {{0,0},{0,0},{0,0}},
-    {{-16,0},{-8,8},{0,16}} // down
+const int8_t SwordOffsets[9][3][2] = {
+    {{0, 0}, {0, 0}, {0, 0}},
+    {{0, -16}, {8, -8}, {16, 0}},   // right
+    {{0, -16}, {-8, -8}, {-16, 0}}, // left
+    {{0, 0}, {0, 0}, {0, 0}},
+    {{16, 0}, {8, -8}, {0, -16}}, // up
+    {{0, 0}, {0, 0}, {0, 0}},
+    {{0, 0}, {0, 0}, {0, 0}},
+    {{0, 0}, {0, 0}, {0, 0}},
+    {{-16, 0}, {-8, 8}, {0, 16}} // down
 };
 
+void UpdateLinkDefaultSprites(Object *object) NONBANKED
+{
 
-const uint8_t LinkSpritesTileCounts[]={
-    0,
-    LinkSpritesRight_TILE_COUNT,
-    LinkSpritesLeft_TILE_COUNT,
-    0,
-    LinkSpritesUp_TILE_COUNT,
-    0,
-    0,
-    0,
-    LinkSpritesDown_TILE_COUNT,
+    switch (object->direction)
+    {
 
-};
+    case J_DOWN:
 
+        PUSH_NAMED_BANK(LinkSpritesDown);
+        
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSpritesDown_TILE_COUNT, LinkSpritesDown_tiles);
 
-const uint8_t* LinkSpritesTiles[]={
-    0,
-    LinkSpritesRight_tiles,
-    LinkSpritesLeft_tiles,
-    0,
-    LinkSpritesUp_tiles,
-    0,
-    0,
-    0,
-    LinkSpritesDown_tiles,
+        POP_BANK;
 
-};
+        break;
 
+    case J_LEFT:
 
-const metasprite_t** LinkMetasprites[]={
-    0,
-    LinkSpritesRight_metasprites,
-    LinkSpritesLeft_metasprites,
-    0,
-    LinkSpritesUp_metasprites,
-    0,
-    0,
-    0,
-    LinkSpritesDown_metasprites,
+        PUSH_NAMED_BANK(LinkSpritesLeft);
+        
 
-};
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSpritesLeft_TILE_COUNT, LinkSpritesLeft_tiles);
 
-const metasprite_t** LinkSwordMetasprites[]={
-    0,
-    LinkSwordSpritesRight_metasprites,
-    LinkSwordSpritesLeft_metasprites,
-    0,
-    LinkSwordSpritesUp_metasprites,
-    0,
-    0,
-    0,
-    LinkSwordSpritesDown_metasprites,
+        POP_BANK;
 
-};
+        break;
 
-const metasprite_t** SwordSlashMetasprites[]={
-    0,
-    SwordSlashRight_metasprites,
-    SwordSlashLeft_metasprites,
-    0,
-    SwordSlashUp_metasprites,
-    0,
-    0,
-    0,
-    SwordSlashDown_metasprites,
-};
+    case J_RIGHT:
 
-void UpdateLinkDefaultSprites(Object* object){
+        PUSH_NAMED_BANK(LinkSpritesRight);
+        
 
-    // Change our object's data for when vram is changed, so it doesn't default
-    object->type->tileData = LinkSpritesDown_tiles;
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSpritesRight_TILE_COUNT, LinkSpritesRight_tiles);
 
-    // Update our vram for the proper direction
-    set_sprite_data(0,LinkSpritesTileCounts[object->direction],LinkSpritesTiles[object->direction]);
+        POP_BANK;
+
+        break;
+
+    case J_UP:
+
+        PUSH_NAMED_BANK(LinkSpritesUp);
+
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSpritesUp_TILE_COUNT, LinkSpritesUp_tiles);
+
+        POP_BANK;
+
+        break;
+    }
 }
 
-void HandleLinkInput(Object* object,uint16_t *nextX, uint16_t *nextY,uint8_t *frame){
-    if(linkSword==-1 && cameraScrollDirection==0){
-            if(joypadCurrent&J_RIGHT){
-                *nextX+=8;
-                *frame=universalBlinker>>4;
-                object->direction=J_RIGHT;
-            }
-            if(joypadCurrent&J_LEFT){
-                *nextX-=8;
-                *frame=universalBlinker>>4;
-                object->direction=J_LEFT;
-            }
-            if(joypadCurrent&J_DOWN){
-                *nextY+=8;
-                *frame=universalBlinker>>4;
-                object->direction=J_DOWN;
-            }
-            if(joypadCurrent&J_UP){
-                *nextY-=8;
-                *frame=universalBlinker>>4;
-                object->direction=J_UP;
-            }
-        }
+void SetLinkSwordTileData() NONBANKED
+{
+    switch (link->direction)
+    {
+    case J_DOWN:
 
-        if((joypadCurrent&J_A)&&!(joypadPrevious&J_A)&&linkSword==-1){
+        PUSH_NAMED_BANK(LinkSwordSpritesDown);
 
-            Object* currentObject = firstObject;
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSwordSpritesDown_TILE_COUNT, LinkSwordSpritesDown_tiles);
 
-            uint16_t lx = (link->x)+((J_DIRECTIONS[link->direction][0]*16)<<4);
-            uint16_t ly = (link->y)+((J_DIRECTIONS[link->direction][1]*16)<<4);
+        POP_BANK;
 
-            while(currentObject!=0){
+        break;
+    case J_UP:
 
-                if(CheckObjectIntersection3(currentObject,lx,ly,16,16)){
-                    
-                    // If we can interact with this object
-                    if(InteractWithObject(currentObject)){
+        PUSH_NAMED_BANK(LinkSwordSpritesUp);
 
-                        return;
-                    }
-                }
-                currentObject=currentObject->next;
-            }
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSwordSpritesUp_TILE_COUNT, LinkSwordSpritesUp_tiles);
 
-            linkSword=0;
+        POP_BANK;
 
-            switch(object->direction){
-                case J_DOWN: set_sprite_data(0,LinkSwordSpritesDown_TILE_COUNT,LinkSwordSpritesDown_tiles);break;
-                case J_UP: set_sprite_data(0,LinkSwordSpritesUp_TILE_COUNT,LinkSwordSpritesUp_tiles);break;
-                case J_LEFT: set_sprite_data(0,LinkSwordSpritesLeft_TILE_COUNT,LinkSwordSpritesLeft_tiles);break;
-                case J_RIGHT: set_sprite_data(0,LinkSwordSpritesRight_TILE_COUNT,LinkSwordSpritesRight_tiles);break;
-            }
+        break;
+    case J_LEFT:
 
-            switch(object->direction){
-                case J_DOWN: set_sprite_data(8,SwordSlashDown_TILE_COUNT,SwordSlashDown_tiles);break;
-                case J_UP: set_sprite_data(8,SwordSlashUp_TILE_COUNT,SwordSlashUp_tiles);break;
-                case J_LEFT: set_sprite_data(8,SwordSlashLeft_TILE_COUNT,SwordSlashLeft_tiles);break;
-                case J_RIGHT: set_sprite_data(8,SwordSlashRight_TILE_COUNT,SwordSlashRight_tiles);break;
-            }
-           
-        }
+        PUSH_NAMED_BANK(LinkSwordSpritesLeft);
+
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSwordSpritesLeft_TILE_COUNT, LinkSwordSpritesLeft_tiles);
+
+        POP_BANK;
+
+        break;
+    case J_RIGHT:
+
+        PUSH_NAMED_BANK(LinkSwordSpritesRight);
+
+        // Update our vram for the proper direction
+        set_sprite_data(0, LinkSwordSpritesRight_TILE_COUNT, LinkSwordSpritesRight_tiles);
+
+        POP_BANK;
+
+        break;
+    }
+
+    switch (link->direction)
+    {
+    case J_DOWN:
+
+        PUSH_NAMED_BANK(SwordSlashDown);
+
+        // Update our vram for the proper direction
+        set_sprite_data(8, SwordSlashDown_TILE_COUNT, SwordSlashDown_tiles);
+
+        POP_BANK;
+
+        break;
+    case J_UP:
+
+        PUSH_NAMED_BANK(SwordSlashUp);
+
+        // Update our vram for the proper direction
+        set_sprite_data(8, SwordSlashUp_TILE_COUNT, SwordSlashUp_tiles);
+
+        POP_BANK;
+
+        break;
+    case J_LEFT:
+
+        PUSH_NAMED_BANK(SwordSlashLeft);
+
+        // Update our vram for the proper direction
+        set_sprite_data(8, SwordSlashLeft_TILE_COUNT, SwordSlashLeft_tiles);
+
+        POP_BANK;
+
+        break;
+    case J_RIGHT:
+
+        PUSH_NAMED_BANK(SwordSlashRight);
+
+        // Update our vram for the proper direction
+        set_sprite_data(8, SwordSlashRight_TILE_COUNT, SwordSlashRight_tiles);
+
+        POP_BANK;
+
+        break;
+    }
 }
 
-uint8_t UpdateLink(Object* object, uint8_t sprite){
+void HandleLinkInput(Object *object, uint8_t *frame)
+{
+    if (linkSword == -1 && cameraScrollDirection == 0)
+    {
+        if (joypadCurrent & J_RIGHT)
+        {
+            nextX += 8;
+            *frame = universalBlinkerTrue;
+            object->direction = J_RIGHT;
+        }
+        if (joypadCurrent & J_LEFT)
+        {
+            nextX -= 8;
+            *frame = universalBlinkerTrue;
+            object->direction = J_LEFT;
+        }
+        if (joypadCurrent & J_DOWN)
+        {
+            nextY += 8;
+            *frame = universalBlinkerTrue;
+            object->direction = J_DOWN;
+        }
+        if (joypadCurrent & J_UP)
+        {
+            nextY -= 8;
+            *frame = universalBlinkerTrue;
+            object->direction = J_UP;
+        }
+
+        trueNextX = nextX >> 4;
+        trueNextY = nextY >> 4;
+    }
+
+    if ((joypadCurrent & J_A) && !(joypadPrevious & J_A) && linkSword == -1 && gotSword)
+    {
+
+        linkSword = 0;
+
+        SetLinkSwordTileData();
+    }
+}
+
+uint8_t move_object_with_camera_sword_slash(Object *object) NONBANKED
+{
+
+    uint8_t count = 0;
+
+    uint8_t frame = linkSword >> 4;
+
+    // The sword slash animations only have 3 frames
+    // Limit the frame variable here so it stays in the final frame for a little bit
+    if (frame > 2)
+        frame = 2;
+
+    switch (object->direction)
+    {
+
+    default:
+
+        PUSH_NAMED_BANK(SwordSlashDown);
+
+        move_metasprite_with_camera(SwordSlashDown_metasprites[frame], 8, linkSwordTrueX, linkSwordTrueY);
+
+        POP_BANK;
+
+        break;
+
+    case J_LEFT:
+
+        PUSH_NAMED_BANK(SwordSlashLeft);
+
+        move_metasprite_with_camera(SwordSlashLeft_metasprites[frame], 8, linkSwordTrueX, linkSwordTrueY);
+
+        POP_BANK;
+
+        break;
+
+    case J_RIGHT:
+
+        PUSH_NAMED_BANK(SwordSlashRight);
+
+        move_metasprite_with_camera(SwordSlashRight_metasprites[frame], 8, linkSwordTrueX, linkSwordTrueY);
+
+        POP_BANK;
+
+        break;
+
+    case J_UP:
+
+        PUSH_NAMED_BANK(SwordSlashUp);
+
+        move_metasprite_with_camera(SwordSlashUp_metasprites[frame], 8, linkSwordTrueX, linkSwordTrueY);
+
+        POP_BANK;
+
+        break;
+    }
+
+    return count;
+}
+
+uint8_t move_object_with_camera_link_sword(Object *object) NONBANKED
+{
+
+    uint8_t frame = linkSword >> 4;
+
+    // The sword slash animations only have 3 frames
+    // Limit the frame variable here so it stays in the final frame for a little bit
+    if (frame > 2)
+        frame = 2;
+
+    uint8_t count = 0;
+
+    switch (object->direction)
+    {
+
+    case J_DOWN:
+
+        PUSH_NAMED_BANK(LinkSwordSpritesDown);
+
+        object->currentMetasprite = LinkSwordSpritesDown_metasprites[frame];
+
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+
+    case J_LEFT:
+
+        PUSH_NAMED_BANK(LinkSwordSpritesLeft);
+
+        object->currentMetasprite = LinkSwordSpritesLeft_metasprites[frame];
+
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+
+    case J_RIGHT:
+
+        PUSH_NAMED_BANK(LinkSwordSpritesRight);
+
+        object->currentMetasprite = LinkSwordSpritesRight_metasprites[frame];
+
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+
+    case J_UP:
+
+        PUSH_NAMED_BANK(LinkSwordSpritesUp);
+
+        object->currentMetasprite = LinkSwordSpritesUp_metasprites[frame];
+
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+    }
+
+    return count;
+}
+
+uint8_t move_object_with_camera_link(Object *object, uint8_t moving) NONBANKED
+{
+
+    uint8_t count = 0;
+
+    uint8_t frame = moving ? universalBlinkerTrue : 0;
+
+
+    switch (object->direction)
+    {
+
+    default:
+
+        PUSH_NAMED_BANK(LinkSpritesDown);
+
+        object->currentMetasprite = LinkSpritesDown_metasprites[frame];
+
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+
+    case J_LEFT:
+
+        PUSH_NAMED_BANK(LinkSpritesLeft);
+
+        object->currentMetasprite = LinkSpritesLeft_metasprites[frame];
+        
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+
+    case J_RIGHT:
+
+        PUSH_NAMED_BANK(LinkSpritesRight);
+
+        object->currentMetasprite = LinkSpritesRight_metasprites[frame];
+        
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+
+    case J_UP:
+
+        PUSH_NAMED_BANK(LinkSpritesUp);
+
+        object->currentMetasprite = LinkSpritesUp_metasprites[frame];
+        
+        move_object_with_camera(object);
+
+        POP_BANK;
+
+        break;
+    }
+
+    return count;
+}
+
+void UpdateLink() BANKED
+{
 
     // If we are damaged
-    if(object->damageX!=0||object->damageY!=0){
-        
-        nextX=object->x+object->damageX;
-        nextY=object->y+object->damageY;
+
+    if (currentObjectUpdating->damageX != 0 || currentObjectUpdating->damageY != 0)
+    {
+
+        nextX = currentObjectUpdating->x + currentObjectUpdating->damageX;
+        nextY = currentObjectUpdating->y + currentObjectUpdating->damageY;
 
         // Update for damaged
-        DamagedNoMove(object,sprite);
+        DamagedNoMove(currentObjectUpdating);
 
-        return 0;
+        trueNextX = nextX >> 4;
+        trueNextY = nextY >> 4;
+
+        return;
     }
 
+    nextX = currentObjectUpdating->x;
+    nextY = currentObjectUpdating->y;
 
-     nextX=object->x;
-     nextY=object->y;
+    frame = 0;
 
-     frame = 0;
+    if (cameraScrollDirection != 0)
+    {
 
-    if(cameraScrollDirection!=0){
-
-        object->direction=cameraScrollDirection;
+        currentObjectUpdating->direction = cameraScrollDirection;
 
         // Move in the scroll direction
-        nextX+=J_DIRECTIONS[cameraScrollDirection][0]*4;
-        nextY+=J_DIRECTIONS[cameraScrollDirection][1]*4;
-    }else{
+        nextX += J_DIRECTIONS[cameraScrollDirection][0] * 4;
+        nextY += J_DIRECTIONS[cameraScrollDirection][1] * 4;
 
-        uint8_t previousObjectDirection=object->direction;
+        trueNextX = nextX >> 4;
+        trueNextY = nextY >> 4;
+    }
+    else
+    {
 
-        HandleLinkInput(object,&nextX,&nextY,&frame);
+        uint8_t previousObjectDirection = currentObjectUpdating->direction;
 
-        if(object->direction!=previousObjectDirection){
+        HandleLinkInput(currentObjectUpdating, &frame);
 
-            UpdateLinkDefaultSprites(object);
-           
+        if (currentObjectUpdating->direction != previousObjectDirection)
+        {
+
+            UpdateLinkDefaultSprites(currentObjectUpdating);
         }
     }
+}
 
-    return 0;
+void HandleSlashPlants()
+{
 
+    uint8_t tile = GetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY);
+
+    // Top Left
+    if (tile == HUD_TILE_COUNT + worldNonSolidTileCount)
+    {
+
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 1, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, 1, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 1, 1, 0);
+
+        // Bottom Left
+    }
+    else if (tile == HUD_TILE_COUNT + worldNonSolidTileCount + 2)
+    {
+
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 1, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, -1, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 1, -1, 0);
+    }
+    // Top Right
+    else if (tile == HUD_TILE_COUNT + worldNonSolidTileCount + 1)
+    {
+
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, -1, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, 1, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, -1, 1, 0);
+
+        // Bottom Right
+    }
+    else if (tile == HUD_TILE_COUNT + worldNonSolidTileCount + 3)
+    {
+
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, -1, 0, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, 0, -1, 0);
+        SetBackgroundTileUnderWorldPosition(linkSwordTrueX, linkSwordTrueY, -1, -1, 0);
+    }
 }
 
 /**
@@ -230,80 +530,77 @@ uint8_t UpdateLink(Object* object, uint8_t sprite){
  * @param sprite The starting sprite to use when drawing metasprites
  * @return uint8_t How many sprites link has used
  */
-uint8_t FinishLinkUpdate(uint8_t sprite){
+uint8_t FinishLinkUpdate(uint8_t sprite) BANKED
+{
 
-    Object* object = link;
+    uint8_t moving = trueNextX != link->trueX || trueNextY != link->trueY;
 
-    // Move to the next position for link
-    MoveToNextPosition(object,nextX,nextY);
-
-    // If we are damaged
-    if(object->damageX!=0||object->damageY!=0){
-
-        // Alternate between our normal palette and palette 1
-        if(universalBlinkerFast>>4==0)return move_metasprite_with_palette(object,sprite,1);
-        return move_metasprite_with_camera(object,sprite);
-    }
+    MoveToNextPosition(link, nextX, nextY, trueNextX, trueNextY);
 
     // If the camera is scrolling
-    if(cameraScrollDirection!=0){
+    if (cameraScrollDirection != 0)
+    {
 
         // If we are not facing the scrolling direction
-        if(object->direction!=cameraScrollDirection){
+        if (link->direction != cameraScrollDirection)
+        {
 
             // Update our direction
-            object->direction=cameraScrollDirection;
+            link->direction = cameraScrollDirection;
 
             // Update links sprites
-            UpdateLinkDefaultSprites(object);
+            UpdateLinkDefaultSprites(link);
         }
-        
+
         // set our metasprite based on the universal blinker
-        object->currentMetasprite=LinkMetasprites[object->direction][universalBlinker>>4];
-        return move_metasprite_with_camera(object,sprite);
+         move_object_with_camera_link(link, moving);
+
+        return;
     }
 
-    uint8_t spriteCount=0;
+    if (linkSword >= 0)
+    {
 
-    if(linkSword>=0){
+        linkSword += 5;
+        frame = linkSword >> 4;
 
-        linkSword+=5;
-        frame=linkSword>>4;
-
-        if(frame<4){
+        if (frame < 4)
+        {
 
             // The sword slash animations only have 3 frames
             // Limit the frame variable here so it stays in the final frame for a little bit
-            if(frame>2)frame=2;
+            if (frame > 2)
+                frame = 2;
 
             // Draw link's' sword slash animation
-            object->currentMetasprite=LinkSwordMetasprites[object->direction][frame];
-            spriteCount+=move_metasprite_with_camera(object,sprite);
+            move_object_with_camera_link_sword(link);
 
             // Position link's sword based on it's frame
-            linkSwordX=object->x+(SwordOffsets[object->direction][frame][0]<<4);
-            linkSwordY=object->y+(SwordOffsets[object->direction][frame][1]<<4);
+            linkSwordX = link->x + (SwordOffsets[link->direction][frame][0] << 4);
+            linkSwordY = link->y + (SwordOffsets[link->direction][frame][1] << 4);
+
+            linkSwordTrueX = linkSwordX >> 4;
+            linkSwordTrueY = linkSwordY >> 4;
+
+            HandleSlashPlants();
 
             // Draw links sword
-            spriteCount+=move_metasprite_with_camera2(SwordSlashMetasprites[object->direction][frame],8,sprite+spriteCount,linkSwordX,linkSwordY);
+            move_object_with_camera_sword_slash(link);
+        }
+        else
+        {
+            linkSword = -1;
+            frame = 0;
 
-        }else {
-            linkSword=-1;
-            frame=0;
-
-            UpdateLinkDefaultSprites(object);
+            UpdateLinkDefaultSprites(link);
         }
     }
-    
-    // If link is not using his sword
-    if(linkSword==-1){
 
+    // If link is not using his sword
+    if (linkSword == -1)
+    {
 
         // draw his current metasprite
-        object->currentMetasprite=LinkMetasprites[object->direction][frame];
-        spriteCount+=move_metasprite_with_camera(object,sprite);
+        move_object_with_camera_link(link, moving);
     }
-
-    return spriteCount;
-
 }

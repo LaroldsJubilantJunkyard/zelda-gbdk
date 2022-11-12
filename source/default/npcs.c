@@ -1,19 +1,41 @@
+#pragma bank 255
+
 #include <gb/gb.h>
 #include "common.h"
 #include "camera.h"
 #include "objects.h"
 #include "collision.h"
+#include "userinterface.h"
 #include "link.h"
 #include "graphics/Moblin.h"
 #include "graphics/explosion.h"
-#include "graphics/NPCMarinDown.h"
+#include "graphics/NPCMarin.h"
 
+BANKREF(NpcsBank)
+BANKREF_EXTERN(NPCMarin)
 
-uint8_t UpdateMarin(Object* object,uint8_t sprite){
+extern uint8_t gotSword;
 
-    StopLinkFromOverlapping(object);
+void move_metasprite_marin(Object* object) NONBANKED{
+    
+    PUSH_NAMED_BANK(NPCMarin);
 
-    object->currentMetasprite=NPCMarinDown_metasprites[0];
+    object->currentMetasprite=NPCMarin_metasprites[0];
 
-    return move_metasprite_with_camera(object,sprite);
+    move_object_with_camera(object);
+
+    POP_BANK;
+
+}
+
+void UpdateMarin() BANKED{
+
+    StopLinkFromOverlapping(currentObjectUpdating);
+
+    if(CheckLinkInteractionWithObject(currentObjectUpdating)){
+        if(gotSword)DrawText("Good luck on your adventure link");
+        else DrawText("Its too dangerous to go out without a weapon");
+    }    
+
+    move_metasprite_marin(currentObjectUpdating);
 }
