@@ -8,7 +8,7 @@ uint8_t InteractWithObject(Object* object){
 
     if(object->type==MARIN_OBJECT_TYPE){
 
-        DrawText("Your name is not zelda. Your name is in fact link. I dont get why",drawAtTop);
+        DrawText("Your name is not zelda. Your name is in fact link. I dont get why");
 
         return 1;
     }
