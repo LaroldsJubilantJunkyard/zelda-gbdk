@@ -30,8 +30,24 @@ extern uint8_t gotSword;
 
 #define set_banked_sprite_data(offset,OBJECT)SWITCH_ROM(BANK(OBJECT));\
                               set_sprite_data(offset,CONCATENATE_VALUES(OBJECT, _TILE_COUNT),CONCATENATE_VALUES(OBJECT, _tiles));
+                     
 
-                        
+#define SPAWN_MOBLIN_AT(x,y,tile) SWITCH_ROM(BANK(NpcsBank));\
+                            FAR_PTR updateMoblinFarPtr = to_far_ptr(UpdateMoblin,BANK(NpcsBank)); \
+                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateMoblinFarPtr);   
+
+#define SPAWN_MARIN_AT(x,y,tile) SWITCH_ROM(BANK(NpcsBank));\
+                            FAR_PTR updateMarinFarPtr = to_far_ptr(UpdateMarin,BANK(NpcsBank)); \
+                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateMarinFarPtr);   
+
+#define SPAWN_CHEST_AT(x,y,tile) SWITCH_ROM(BANK(ChestBank));\
+                            FAR_PTR updateChestFarPtr = to_far_ptr(UpdateChest,BANK(ChestBank)); \
+                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateChestFarPtr);   
+
+
+#define SPAWN_SWORD_AT(x,y,tile) SWITCH_ROM(BANK(SwordAloneBank));\
+                            FAR_PTR updateSwordAloneFarPtr = to_far_ptr(UpdateSwordAlone,BANK(SwordAloneBank)); \
+                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateSwordAloneFarPtr);   
 
 void SpawnObjectsForArea() NONBANKED{
 
@@ -39,54 +55,34 @@ void SpawnObjectsForArea() NONBANKED{
 
     if(nextCameraSectionColumn>=0&&nextCameraSectionColumn<=1&&nextCameraSectionRow>=0&&nextCameraSectionRow<=1){
 
-        set_banked_sprite_data(18,Moblin);
-        set_banked_sprite_data(18+Moblin_TILE_COUNT,NPCMarin);
-        set_banked_sprite_data(18+Moblin_TILE_COUNT+NPCMarin_TILE_COUNT,Chest);
-        set_banked_sprite_data(18+Moblin_TILE_COUNT+NPCMarin_TILE_COUNT+Chest_TILE_COUNT,SwordAlone);
+        uint8_t moblinTileIndex = 18;
+        uint8_t marinTileIndex = moblinTileIndex+Moblin_TILE_COUNT;
+        uint8_t chestTileIndex = marinTileIndex+NPCMarin_TILE_COUNT;
+        uint8_t swordTileIndex = chestTileIndex+Chest_TILE_COUNT;
+
+        set_banked_sprite_data(moblinTileIndex,Moblin);
+        set_banked_sprite_data(marinTileIndex,NPCMarin);
+        set_banked_sprite_data(chestTileIndex,Chest);
+        set_banked_sprite_data(swordTileIndex,SwordAlone);
 
         if(nextCameraSectionColumn==0&&nextCameraSectionRow==0){
 
-            SWITCH_ROM(BANK(ChestBank));
+            SPAWN_CHEST_AT(60,40,chestTileIndex);
 
-            FAR_PTR updateChestFarPtr = to_far_ptr(UpdateChest,BANK(ChestBank));
+        }else if(nextCameraSectionColumn==1&&nextCameraSectionRow==0){
             
-            SpawnObject(MOBLIN_OBJECT_TYPE,60,40,J_DOWN,0,18+Moblin_TILE_COUNT+NPCMarin_TILE_COUNT,updateChestFarPtr);
-        }
+            SPAWN_MOBLIN_AT(120,40,18);
 
-        
-        else if(nextCameraSectionColumn==1&&nextCameraSectionRow==0){
+            uint8_t marinX = gotSword ? 64 : 80;
+            uint8_t marinY = gotSword ? 84 : 71;
 
-            SWITCH_ROM(BANK(Moblin));
-
-            FAR_PTR updateMoblinFarPtr = to_far_ptr(UpdateMoblin,BANK(Moblin));
-            
-            SpawnObject(MOBLIN_OBJECT_TYPE,120,40,J_DOWN,0,18,updateMoblinFarPtr);
-
-            SWITCH_ROM(BANK(NPCMarin));
-
-            FAR_PTR updateMarinFarPtr = to_far_ptr(UpdateMarin,BANK(NPCMarin));
-            uint8_t marinX = 80;
-            uint8_t marinY = 71;
-
-            if(gotSword){
-                marinX=64;
-                marinY=84;
-            }
-
-            SpawnObject(MARIN_OBJECT_TYPE,marinX,marinY,J_DOWN,0,18+Moblin_TILE_COUNT,updateMarinFarPtr);
-            
-
-
+            SPAWN_MARIN_AT(marinX,marinY,marinTileIndex);
 
         }else if(nextCameraSectionColumn==1&&nextCameraSectionRow==1){
 
             if(!gotSword){
 
-                SWITCH_ROM(BANK(SwordAloneBank));
-
-                FAR_PTR updateSwordAloneFarPtr = to_far_ptr(UpdateSwordAlone,BANK(SwordAloneBank));
-                
-                SpawnObject(MOBLIN_OBJECT_TYPE,90,70,J_DOWN,0,18+Moblin_TILE_COUNT+NPCMarin_TILE_COUNT+Chest_TILE_COUNT,updateSwordAloneFarPtr);
+                SPAWN_SWORD_AT(90,70,swordTileIndex);
 
             }
         }
