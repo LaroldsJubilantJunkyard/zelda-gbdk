@@ -23,6 +23,12 @@ void DamageLinkWhenClose(Object* object){
 
             if(link->health>0)link->health--;
 
+            NR10_REG = 0x5A;
+            NR11_REG = 0x81;
+            NR12_REG = 0x47;
+            NR13_REG = 0x69;
+            NR14_REG = 0x86;
+
             // Update the hearts shown
             UpdateHearts();
 
@@ -40,6 +46,12 @@ void ReceiveDamageFromLinksSword(Object* object){
     if(CheckObjectIntersectionAgainstLinksSword(object)){
 
         object->health--;
+
+        NR10_REG = 0x5A;
+        NR11_REG = 0x81;
+        NR12_REG = 0x47;
+        NR13_REG = 0x69;
+        NR14_REG = 0x86;
         
         object->damageX = ((object->trueX)-(link->trueX))*3;
         object->damageY = ((object->trueY)-(link->trueY))*3;

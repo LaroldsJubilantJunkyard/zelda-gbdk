@@ -233,6 +233,11 @@ void HandleLinkInput(Object *object, uint8_t *frame)
 
         linkSword = 0;
 
+        NR41_REG = 0x3A;
+        NR42_REG = 0xA1;
+        NR43_REG = 0x30;
+        NR44_REG = 0x80;
+
         SetLinkSwordTileData();
     }
 }

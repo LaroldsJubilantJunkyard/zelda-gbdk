@@ -221,6 +221,12 @@ void DrawText(unsigned char *text){
 
             uint8_t isCurrentLetterNonAlphaNumeric=FALSE;
 
+            NR10_REG = 0x34;
+            NR11_REG = 0x81;
+            NR12_REG = 0x41;
+            NR13_REG = 0x7F;
+            NR14_REG = 0x86;
+
             set_bkg_tile_xy((startColumn+1+column)%32,baseY+row,GetTileForCharacter(c,&isCurrentLetterNonAlphaNumeric));
 
             if((++column)>=18){
@@ -249,6 +255,7 @@ void DrawText(unsigned char *text){
         }
         
 
+        wait_vbl_done();
         wait_vbl_done();
     }
 
