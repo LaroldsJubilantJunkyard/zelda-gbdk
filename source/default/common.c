@@ -8,7 +8,7 @@ uint8_t joypadCurrent=0,joypadPrevious=0;
 uint8_t _previous_bank;
 
 
-int8_t J_DIRECTIONS[9][2]={
+const int16_t J_DIRECTIONS[9][2]={
     {0,0},
     {1,0},
     {-1,0},
@@ -30,7 +30,7 @@ void move_metasprite_with_camera(const metasprite_t * metasprite, uint8_t base_t
 
     if(y>255)return;
     
-    currentUpdateSpriteCount+=move_metasprite(metasprite,base_tile,currentUpdateSpriteCount,x,y);
+    currentUpdateSpriteCount+=move_metasprite(metasprite,base_tile,currentUpdateSpriteCount,(uint8_t) x,(uint8_t) y);
 }
 
 void move_metasprite_with_palette(Object* object,uint8_t palette)NONBANKED{

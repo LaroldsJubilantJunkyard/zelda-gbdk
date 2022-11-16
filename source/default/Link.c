@@ -195,37 +195,35 @@ void SetLinkSwordTileData() NONBANKED
     }
 }
 
-void HandleLinkInput(Object *object, uint8_t *frame)
+void HandleLinkInput()
 {
     if (linkSword == -1 && cameraScrollDirection == 0)
     {
         if (joypadCurrent & J_RIGHT)
         {
-            nextX += 8;
-            *frame = universalBlinkerTrue;
-            object->direction = J_RIGHT;
+            nextX = link->x+8;
+            trueNextX = nextX >> 4;
+            link->direction = J_RIGHT;
         }
         if (joypadCurrent & J_LEFT)
         {
-            nextX -= 8;
-            *frame = universalBlinkerTrue;
-            object->direction = J_LEFT;
+            nextX = link->x - 8;
+            trueNextX = nextX >> 4;
+            link->direction = J_LEFT;
         }
         if (joypadCurrent & J_DOWN)
         {
-            nextY += 8;
-            *frame = universalBlinkerTrue;
-            object->direction = J_DOWN;
+            nextY = link->y + 8;
+            trueNextY = nextY >> 4;
+            link->direction = J_DOWN;
         }
         if (joypadCurrent & J_UP)
         {
-            nextY -= 8;
-            *frame = universalBlinkerTrue;
-            object->direction = J_UP;
+            nextY = link->y - 8;
+            trueNextY = nextY >> 4;
+            link->direction = J_UP;
         }
 
-        trueNextX = nextX >> 4;
-        trueNextY = nextY >> 4;
     }
 
     if ((joypadCurrent & J_A) && !(joypadPrevious & J_A) && linkSword == -1 && gotSword)
@@ -451,9 +449,6 @@ void UpdateLink() BANKED
         return;
     }
 
-    nextX = currentObjectUpdating->x;
-    nextY = currentObjectUpdating->y;
-
     frame = 0;
 
     if (cameraScrollDirection != 0)
@@ -473,7 +468,7 @@ void UpdateLink() BANKED
 
         uint8_t previousObjectDirection = currentObjectUpdating->direction;
 
-        HandleLinkInput(currentObjectUpdating, &frame);
+        HandleLinkInput();
 
         if (currentObjectUpdating->direction != previousObjectDirection)
         {
@@ -532,13 +527,11 @@ void HandleSlashPlants()
  * @brief Called after all objects have updated
  * This should becalled after all objects have been updated. This method gives objects the ability to stop intersection/overlap with link. Without having to loop
  * through each object unneccesarily.
- * @param sprite The starting sprite to use when drawing metasprites
- * @return uint8_t How many sprites link has used
  */
-uint8_t FinishLinkUpdate(uint8_t sprite) BANKED
+void FinishLinkUpdate() BANKED
 {
 
-    uint8_t moving = trueNextX != link->trueX || trueNextY != link->trueY;
+    uint8_t moving = nextX != link->x || nextY != link->y;
 
     MoveToNextPosition(link, nextX, nextY, trueNextX, trueNextY);
 

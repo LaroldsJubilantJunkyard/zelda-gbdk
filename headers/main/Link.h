@@ -9,6 +9,6 @@ extern int8_t linkSword;
 extern uint8_t linkMaxHealth;
 
 
-void FinishLinkUpdate(uint8_t sprite) BANKED;
+void FinishLinkUpdate() BANKED;
 
 #endif

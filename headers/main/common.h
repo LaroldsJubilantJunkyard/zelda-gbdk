@@ -11,7 +11,7 @@
 
 extern uint8_t joypadCurrent,joypadPrevious,_previous_bank;
 
-extern  int8_t J_DIRECTIONS[9][2];
+extern const int16_t J_DIRECTIONS[9][2];
 
 #define PUSH_NAMED_BANK(b) _previous_bank=_current_bank; SWITCH_ROM(BANK(b));
 #define POP_BANK SWITCH_ROM(_previous_bank);

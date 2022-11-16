@@ -80,7 +80,7 @@ void main() NONBANKED{
         0,0,
 
         // Where to place the player (respective to the starter area), and what direction to face.
-        50,80,J_DOWN);
+        50,90,J_DOWN);
 
     POP_BANK;
 
