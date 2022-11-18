@@ -10,6 +10,11 @@ uint16_t nextCameraSectionColumn,nextCameraSectionRow,currentCameraSectionColumn
 uint16_t lastCameraX, lastCameraY;
 uint16_t lastCameraRow, lastCameraColumn;
 
+
+void vblank_isr() {
+    move_bkg(cameraTrueX, cameraTrueY);
+}
+
 void SetupCamera(uint16_t x, uint16_t y, uint16_t column, uint16_t row){
     cameraX=x;
     cameraY=y;
@@ -25,15 +30,18 @@ void SetupCamera(uint16_t x, uint16_t y, uint16_t column, uint16_t row){
     lastCameraY=y;
     cameraSection=CAMERA_CURRENT_AREA;
 
+    disable_interrupts();
+    add_VBL(vblank_isr);
+    set_interrupts(VBL_IFLAG);
+    enable_interrupts();
+
+
 }
 
 void UpdateCameraSubMap(){
-
-    // update hardware scroll position
-    SCY_REG = cameraTrueY; SCX_REG = cameraTrueX; 
     
-    uint16_t cameraRow = (SCY_REG>>3);
-    uint16_t cameraColumn=(SCX_REG>>3);
+    uint16_t cameraRow = (cameraTrueY>>3);
+    uint16_t cameraColumn=(cameraTrueX>>3);
 
     // If our camera's column has changed
     if(lastCameraColumn!=cameraColumn){
@@ -70,6 +78,22 @@ void UpdateCameraSubMap(){
     lastCameraY=cameraY;
 }
 
+void StopCameraScrolling(){
+
+    // We are not scrolling anymore
+    cameraScrollDirection=0;
+    cameraSection=CAMERA_CURRENT_AREA;
+
+    currentCameraSectionColumn=nextCameraSectionColumn;
+    currentCameraSectionRow=nextCameraSectionRow;
+}
+
+void StartCameraScrolling(uint8_t direction){
+
+    nextCameraSectionColumn+=J_DIRECTIONS[direction][0];
+    nextCameraSectionRow+=J_DIRECTIONS[direction][1];
+    cameraScrollDirection=direction;
+}
 
 uint8_t UpdateCamera(){
 
@@ -80,18 +104,24 @@ uint8_t UpdateCamera(){
 
         // If link is on the right edge
         if(linkScreenX>(DEVICE_SCREEN_PX_WIDTH-8)){
-            if(nextCameraSectionColumn<worldTilemapHeightInTiles>>4){
-                nextCameraSectionColumn++;
-                cameraScrollDirection=J_RIGHT;
-                return 1;
+
+            // If we are not on right section of the world
+            if(nextCameraSectionColumn<worldTilemapHeightInTiles/20){
+
+                StartCameraScrolling(J_RIGHT);
+
+                return CAMERA_STARTED_SCROLLING;
             }
 
         // If link is on the left edge
         }else if(linkScreenX<8){
+
+            // If we are not on left section of the world
             if(nextCameraSectionColumn>0){
-                nextCameraSectionColumn--;
-                cameraScrollDirection=J_LEFT;
-                return 1;
+
+                StartCameraScrolling(J_LEFT);
+
+                return CAMERA_STARTED_SCROLLING;
             }
         }
 
@@ -99,18 +129,24 @@ uint8_t UpdateCamera(){
 
         // If link is on the bottom edge
         if(linkScreenY>CAMERA_VERTICAL_SIZE){
+
+            // If we are not on bottom section of the world
             if(nextCameraSectionRow<worldTilemapHeightInTiles>>4){
-                nextCameraSectionRow++;
-                cameraScrollDirection=J_DOWN;
-                return 1;
+
+                StartCameraScrolling(J_DOWN);
+
+                return CAMERA_STARTED_SCROLLING;
             }
 
         // If link is on the top edge
         }else if(linkScreenY<0){
+
+            // If we are not on top section of the world
             if(nextCameraSectionRow>0){
-                nextCameraSectionRow--;
-                cameraScrollDirection=J_UP;
-                return 1;
+
+                StartCameraScrolling(J_UP);
+
+                return CAMERA_STARTED_SCROLLING;
             }
         }
     }else{
@@ -126,22 +162,17 @@ uint8_t UpdateCamera(){
             cameraTrueY=cameraY>>4;
             cameraTrueX=cameraX>>4;
 
-            // Update the submap
             UpdateCameraSubMap();
+
+            return CAMERA_SCROLLING;
         }else{
 
-            // We are not scrolling anymore
-            cameraScrollDirection=0;
-            cameraSection=CAMERA_CURRENT_AREA;
+            StopCameraScrolling();
 
-            currentCameraSectionColumn=nextCameraSectionColumn;
-            currentCameraSectionRow=nextCameraSectionRow;
-
-            
-            RecycleOutOfScreenObjects();
+            return CAMERA_STOPPED_SCROLLING;
         }
 
     }
 
-    return 0;
+    return CAMERA_STEADY;
 }

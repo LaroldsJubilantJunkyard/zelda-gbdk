@@ -21,6 +21,7 @@ BANKREF_EXTERN(LinkSwordSpritesDown)
 BANKREF_EXTERN(HUD)
 
 
+
 void main() NONBANKED{
     
 
@@ -91,6 +92,8 @@ void main() NONBANKED{
 
     UpdateInterfaceFull();
 
+
+
     while(TRUE){
 
         joypadPrevious = joypadCurrent;
@@ -98,17 +101,29 @@ void main() NONBANKED{
 
         UpdateAllObjects();
 
-        // This function returns true, then we JUST started scrolling
-        // If we just started scrolling to a new area
-        if(UpdateCamera()){
+        uint8_t cameraState = 0;
+
+        // Update our camera and get it's state
+        cameraState=UpdateCamera();
+
+        // If it just started scrolling
+        if(cameraState==CAMERA_STARTED_SCROLLING){
             
             RecycleOutOfScreenObjects();
 
             // Spawn objects for that area
             SpawnObjectsForArea();
+
+        // If it just stopped scrolling
+        }else if(cameraState==CAMERA_STOPPED_SCROLLING){
+            
+            RecycleOutOfScreenObjects();
+
         }
 
         wait_vbl_done();
+
+       
     }
 
 }

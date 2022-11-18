@@ -1,6 +1,7 @@
 #include <gb/gb.h>
 #include "common.h"
 #include "camera.h"
+#include "link.h"
 #include "userinterface.h"
 #include "graphics/HUD.h"
 
@@ -99,7 +100,10 @@ worldNonSolidTileCount=solidTileCount;
     FAR_PTR updateLinkFarPtr = TO_FAR_PTR(UpdateLink,BANK(LinkBank));
 
     link=SpawnObject(LINK_OBJECT_TYPE,linkRelativeX,linkRelativeY,linkDirection,0,0,updateLinkFarPtr);
-
+    nextX=link->x;
+    nextY=link->y;
+    trueNextX=nextX>>4;
+    trueNextY=nextY>>4;
 
     POP_BANK;
     

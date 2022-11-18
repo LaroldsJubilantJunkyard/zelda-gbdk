@@ -7,6 +7,11 @@
 #define CAMERA_HORIZONTAL_SECTION_COUNT (BasicMap_WIDTH/DEVICE_SCREEN_PX_WIDTH)
 #define CAMERA_CURRENT_AREA (nextCameraSectionColumn+nextCameraSectionRow*CAMERA_HORIZONTAL_SECTION_COUNT)
 
+#define CAMERA_STEADY 0
+#define CAMERA_STARTED_SCROLLING 1
+#define CAMERA_STOPPED_SCROLLING 2
+#define CAMERA_SCROLLING 3
+
 extern uint8_t cameraScrollDirection;
 extern int16_t cameraX,cameraY,cameraTrueY,cameraTrueX;
 extern uint16_t nextCameraSectionColumn,nextCameraSectionRow,currentCameraSectionColumn,currentCameraSectionRow,cameraSection;
