@@ -24,11 +24,13 @@ void move_metasprite_with_camera(const metasprite_t * metasprite, uint8_t base_t
 
      x = 8+(x-cameraTrueX);
     
-    if(x>255)return;
+    if(x>168)return;
+    if(x<-8)return;
 
      y = 16+(y-cameraTrueY);
 
-    if(y>255)return;
+    if(y>160)return;
+    if(y<-8)return;
     
     currentUpdateSpriteCount+=move_metasprite(metasprite,base_tile,currentUpdateSpriteCount,(uint8_t) x,(uint8_t) y);
 }

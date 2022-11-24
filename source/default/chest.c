@@ -16,7 +16,7 @@ void move_metasprite_camera_chest(Object* object) NONBANKED{
 
     PUSH_NAMED_BANK(Chest);
     
-    object->currentMetasprite = Chest_metasprites[1-chestUsed];
+    object->currentMetasprite = Chest_metasprites[chestUsed];
     move_object_with_camera(object);
 
     POP_BANK;
@@ -29,7 +29,7 @@ void UpdateChest() BANKED{
 
     if(CheckLinkInteractionWithObject(currentObjectUpdating) && !chestUsed){
 
-        DrawText("Link found something.");
+        DrawText("The chest was empty.");
 
         chestUsed=TRUE;
     }
