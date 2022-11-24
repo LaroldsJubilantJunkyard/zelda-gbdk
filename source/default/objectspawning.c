@@ -34,20 +34,20 @@ extern uint8_t gotSword;
 
 #define SPAWN_MOBLIN_AT(x,y,tile) SWITCH_ROM(BANK(NpcsBank));\
                             FAR_PTR updateMoblinFarPtr = to_far_ptr(UpdateMoblin,BANK(NpcsBank)); \
-                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateMoblinFarPtr);   
+                            SpawnObject(x,y,J_DOWN,0,tile,updateMoblinFarPtr);   
 
 #define SPAWN_MARIN_AT(x,y,tile) SWITCH_ROM(BANK(NpcsBank));\
                             FAR_PTR updateMarinFarPtr = to_far_ptr(UpdateMarin,BANK(NpcsBank)); \
-                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateMarinFarPtr);   
+                            SpawnObject(x,y,J_DOWN,0,tile,updateMarinFarPtr);   
 
 #define SPAWN_CHEST_AT(x,y,tile) SWITCH_ROM(BANK(ChestBank));\
                             FAR_PTR updateChestFarPtr = to_far_ptr(UpdateChest,BANK(ChestBank)); \
-                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateChestFarPtr);   
+                            SpawnObject(x,y,J_DOWN,0,tile,updateChestFarPtr);   
 
 
 #define SPAWN_SWORD_AT(x,y,tile) SWITCH_ROM(BANK(SwordAloneBank));\
                             FAR_PTR updateSwordAloneFarPtr = to_far_ptr(UpdateSwordAlone,BANK(SwordAloneBank)); \
-                            SpawnObject(MOBLIN_OBJECT_TYPE,x,y,J_DOWN,0,tile,updateSwordAloneFarPtr);   
+                            SpawnObject(x,y,J_DOWN,0,tile,updateSwordAloneFarPtr);   
 
 void SpawnObjectsForArea() NONBANKED{
 

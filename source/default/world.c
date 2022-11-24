@@ -99,7 +99,7 @@ worldNonSolidTileCount=solidTileCount;
     SWITCH_ROM(BANK(LinkBank));
     FAR_PTR updateLinkFarPtr = TO_FAR_PTR(UpdateLink,BANK(LinkBank));
 
-    link=SpawnObject(LINK_OBJECT_TYPE,linkRelativeX,linkRelativeY,linkDirection,0,0,updateLinkFarPtr);
+    link=SpawnObject(linkRelativeX,linkRelativeY,linkDirection,0,0,updateLinkFarPtr);
     nextX=link->x;
     nextY=link->y;
     trueNextX=nextX>>4;

@@ -32,7 +32,7 @@ void UpdateMarin() BANKED{
 
     StopLinkFromOverlapping(currentObjectUpdating);
 
-    if(CheckLinkInteractionWithObject(currentObjectUpdating)){
+    if(CheckLinkInteractionWithObject(currentObjectUpdating,16,16)){
         if(gotSword)DrawText("Good luck on your adventure link");
         else DrawText("Its too dangerous to go out without a weapon");
     }    

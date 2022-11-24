@@ -19,7 +19,7 @@ void DamageLinkWhenClose(Object* object){
 
     if(link->damageX==0&&link->damageY==0){
 
-        if(CheckObjectIntersection(link,object)){
+        if(CheckObjectIntersection(link,16,16,object,16,16)){
 
             if(link->health>0)link->health--;
 
@@ -43,7 +43,7 @@ void ReceiveDamageFromLinksSword(Object* object){
     if(object->health==0)return;
     if(object->damageX!=0||object->damageY!=0)return;
 
-    if(CheckObjectIntersectionAgainstLinksSword(object)){
+    if(CheckObjectIntersectionAgainstLinksSword(object,16,16)){
 
         object->health--;
 

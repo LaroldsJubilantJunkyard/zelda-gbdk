@@ -21,7 +21,6 @@ typedef struct Object{
     uint8_t health;
     uint16_t helper1;
     FAR_PTR updateFarPtr;
-    struct ObjectType *type;
     struct Object *next;
     const metasprite_t* currentMetasprite;
 } Object;
@@ -46,7 +45,6 @@ typedef struct ObjectType{
 
 extern Object* link;
 extern uint16_t universalBlinker,universalBlinkerTrue,universalBlinkerFast,universalBlinkerFastTrue;
-extern ObjectType objectTypes[];
 
 extern Object* firstObject,*lastObject;
 extern metasprite_t  ramMetaspriteObjects[];
@@ -55,7 +53,7 @@ extern metasprite_t  ramMetaspriteObjects[];
 extern uint8_t currentUpdateSpriteCount;
 extern Object* currentObjectUpdating;
 
-Object* SpawnObject(ObjectType* type, int16_t x, int16_t y, uint8_t direction,uint8_t id,uint8_t baseTileIndex, FAR_PTR updateFarPtr);
+Object* SpawnObject( int16_t x, int16_t y, uint8_t direction,uint8_t id,uint8_t baseTileIndex, FAR_PTR updateFarPtr);
 
 void ResetAllObjects();
 void RecycleObject(Object* objectToBeRecycled, Object* previousObject);
@@ -65,7 +63,7 @@ uint8_t Damaged(Object* object);
 uint8_t RemoveWhenOutOffscreen(Object* object);
 
 void RecycleOutOfScreenObjects();
-uint8_t CheckLinkInteractionWithObject(Object* currentObject);
+uint8_t CheckLinkInteractionWithObject(Object* currentObject,int16_t width,int16_t height);
 
 uint8_t DamagedNoMove(Object* object);
 void StopLinkFromOverlapping(Object* object);

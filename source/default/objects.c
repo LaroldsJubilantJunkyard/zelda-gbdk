@@ -12,18 +12,6 @@
 #include "graphics/SwordSlashDown.h"
 #include "graphics/LinkSpritesDown.h"
 
-extern uint8_t UpdateExplosion(Object *object, uint8_t sprite);
-extern uint8_t UpdateLink(Object *object, uint8_t sprite);
-extern uint8_t UpdateMoblin(Object *object, uint8_t sprite);
-extern uint8_t UpdateMarin(Object *object, uint8_t sprite);
-
-ObjectType objectTypes[] = {
-    {.active = FALSE, .bank = 0, .width = 16, .height = 16, .tileCount = LinkSpritesDown_TILE_COUNT, .paddedTileCount = 18, .tileData = LinkSpritesDown_tiles, .count = 0, .maxHealth = 3, .next = 0, .startTile = 0, .update = &UpdateLink},
-    {.active = FALSE, .bank = 0, .width = 16, .height = 16, .tileCount = Explosion_TILE_COUNT, .paddedTileCount = 0, .tileData = Explosion_tiles, .count = 0, .maxHealth = 0, .next = 0, .startTile = 0, .update = &UpdateExplosion},
-    {.active = FALSE, .bank = 0, .width = 12, .height = 12, .tileCount = Moblin_TILE_COUNT, .paddedTileCount = 0, .tileData = Moblin_tiles, .count = 0, .maxHealth = 3, .next = 0, .startTile = 0, .update = &UpdateMoblin},
-    {.active = FALSE, .bank = 0, .width = 16, .height = 16, .tileCount = NPCMarin_TILE_COUNT, .paddedTileCount = 0, .tileData = NPCMarin_tiles, .count = 0, .maxHealth = 3, .next = 0, .startTile = 0, .update = &UpdateMarin},
-
-};
 
 Object objects[MAX_NUMBER_OF_OBJECTS];
 Object *firstObject = 0, *lastObject = 0;
@@ -49,7 +37,7 @@ void ResetAllObjects()
     firstObject = 0;
 }
 
-Object *SpawnObject(ObjectType *type, int16_t x, int16_t y, uint8_t direction, uint8_t id, uint8_t baseTileIndex, FAR_PTR updateFarPtr)
+Object *SpawnObject( int16_t x, int16_t y, uint8_t direction, uint8_t id, uint8_t baseTileIndex, FAR_PTR updateFarPtr)
 {
     uint8_t i = 0;
 
@@ -78,8 +66,7 @@ Object *SpawnObject(ObjectType *type, int16_t x, int16_t y, uint8_t direction, u
     nextObject->trueX = nextObject->x >> 4;
     nextObject->trueY = nextObject->y >> 4;
     nextObject->helper1 = 0;
-    nextObject->health = type->maxHealth;
-    nextObject->type = type;
+    nextObject->health = 3;
     nextObject->direction = direction;
     nextObject->explosion = -1;
 
@@ -185,7 +172,7 @@ void RecycleObject(Object *objectToBeRecycled, Object *previousObject)
     objectToBeRecycled->y = 30000;
 }
 
-uint8_t CheckLinkInteractionWithObject(Object *currentObject) NONBANKED
+uint8_t CheckLinkInteractionWithObject(Object *currentObject,int16_t width,int16_t height) NONBANKED
 {
 
     if ((joypadCurrent & J_A) && !(joypadPrevious & J_A))
@@ -194,7 +181,7 @@ uint8_t CheckLinkInteractionWithObject(Object *currentObject) NONBANKED
         uint16_t lx = (link->trueX) + (J_DIRECTIONS[link->direction][0] * 16);
         uint16_t ly = (link->trueY) + (J_DIRECTIONS[link->direction][1] * 16);
 
-        if (CheckObjectIntersectionAgainstRectangle(currentObject, lx, ly, 16, 16))
+        if (CheckObjectIntersectionAgainstRectangle(currentObject,width,height, lx, ly, 16, 16))
         {
 
             return 1;
@@ -236,12 +223,12 @@ uint8_t MoveToNextPosition(Object *object, int16_t nextXTemp, int16_t nextYTemp,
 
 void StopLinkFromOverlapping(Object *object) NONBANKED
 {
-    if (CheckObjectIntersectionAgainstRectangle(object, trueNextX, link->trueY, 10, 12))
+    if (CheckObjectIntersectionAgainstRectangle(object,16,16, trueNextX, link->trueY, 10, 12))
     {
         nextX = link->x;
         trueNextX = nextX >> 4;
     }
-    if (CheckObjectIntersectionAgainstRectangle(object, link->trueX, trueNextY, 10, 12))
+    if (CheckObjectIntersectionAgainstRectangle(object,16,16, link->trueX, trueNextY, 10, 12))
     {
         nextY = link->y;
         trueNextY = nextY >> 4;

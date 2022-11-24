@@ -24,34 +24,34 @@ uint8_t UpdateExplosion(Object* object, uint8_t sprite){
     switch (frame)
     {
         case 0: 
-            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x2,y2);
-            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x3,y3);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->baseTileIndex,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->baseTileIndex,x3,y3);
             break;
         case 1: 
-            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x2,y2);
-            move_metasprite_with_camera(Explosion_metasprites[0],object->type->startTile,x3,y3);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->baseTileIndex,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[0],object->baseTileIndex,x3,y3);
             break;
         case 2: 
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x3,y3);
             break;
         case 3: 
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x3,y3);
             break;
         case 4: 
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x3,y3);
             break;
         case 5: 
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,object->x,object->y);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,object->x,object->y);
             break;
         case 6: 
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x2,y2);
-            move_metasprite_with_camera(Explosion_metasprites[1],object->type->startTile,x3,y3);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x2,y2);
+            move_metasprite_with_camera(Explosion_metasprites[1],object->baseTileIndex,x3,y3);
             break;
         case 7: 
-            move_metasprite_with_camera(Explosion_metasprites[2],object->type->startTile,object->x,object->y);
+            move_metasprite_with_camera(Explosion_metasprites[2],object->baseTileIndex,object->x,object->y);
             break;
     }
 

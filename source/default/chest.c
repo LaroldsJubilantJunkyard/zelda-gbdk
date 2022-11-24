@@ -27,7 +27,7 @@ void UpdateChest() BANKED{
 
     StopLinkFromOverlapping(currentObjectUpdating);
 
-    if(CheckLinkInteractionWithObject(currentObjectUpdating) && !chestUsed){
+    if(CheckLinkInteractionWithObject(currentObjectUpdating,16,16) && !chestUsed){
 
         DrawText("The chest was empty.");
 

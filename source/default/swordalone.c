@@ -45,7 +45,7 @@ void UpdateSwordAlone() BANKED{
 
    
 
-    if(CheckLinkInteractionWithObject(currentObjectUpdating)){
+    if(CheckLinkInteractionWithObject(currentObjectUpdating,16,16)){
 
         DrawText("Link found a sword.");
 
