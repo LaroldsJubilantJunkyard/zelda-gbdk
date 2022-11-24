@@ -67,11 +67,14 @@ void SpawnObjectsForArea() NONBANKED{
 
         if(nextCameraSectionColumn==0&&nextCameraSectionRow==0){
 
+            SPAWN_MOBLIN_AT(120,40,moblinTileIndex);
+
             SPAWN_CHEST_AT(60,40,chestTileIndex);
 
         }else if(nextCameraSectionColumn==1&&nextCameraSectionRow==0){
             
-            SPAWN_MOBLIN_AT(120,40,18);
+            
+            SPAWN_MOBLIN_AT(120,40,moblinTileIndex);
 
             uint8_t marinX = gotSword ? 64 : 80;
             uint8_t marinY = gotSword ? 84 : 71;
@@ -85,6 +88,10 @@ void SpawnObjectsForArea() NONBANKED{
                 SPAWN_SWORD_AT(90,70,swordTileIndex);
 
             }
+        }else if(nextCameraSectionColumn==0&&nextCameraSectionRow==1){
+
+            
+            SPAWN_MOBLIN_AT(80,50,moblinTileIndex);
         }
     }
 
